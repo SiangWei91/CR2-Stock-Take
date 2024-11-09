@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A simple PWA barcode scanner">
+    <meta name="theme-color" content="#000000">
+    <link rel="manifest" href="/CR2-Stock-Take/manifest.json">
     <title>库存盘点系统</title>
     <style>
         * { box-sizing: border-box; }
@@ -128,5 +131,17 @@
     </div>
 
     <script src="app.js"></script>
+
+<script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js')
+          .then(function(registration) {
+            console.log('Service Worker registered with scope:', registration.scope);
+          })
+          .catch(function(error) {
+            console.log('Service Worker registration failed:', error);
+          });
+      }
+    </script>
 </body>
 </html>
