@@ -1,4 +1,4 @@
-// 示例产品数据 - 一个条码对应两个SKU（箱装和散货）
+// 示例产品数据
 let products = [
     {
         barcode: "123456",
@@ -34,7 +34,6 @@ let products = [
 
 let currentProduct = null;
 let scanRecords = [];
-let currentPage = 'scan';
 
 // 初始化
 window.onload = function() {
@@ -110,19 +109,32 @@ function submitQuantity() {
 
     // 记录盘点数据
     const record = {
-        timestamp: new Date().toLocaleString(),
-        product: currentProduct.name,
-        barcode: currentProduct.barcode,
-        boxQuantity: boxQuantity,
-        pieceQuantity: pieceQuantity
+        timestamp: new Date(),
+        items: [{
+            name: currentProduct.name,
+            packaging: currentProduct.packaging,
+            boxQuantity: boxQuantity,
+            pieceQuantity: pieceQuantity
+        }]
     };
 
-    scanRecords.unshift(record); // 添加到记录开头
-    renderRecords();
+    // 检查是否有相同时间戳的记录组（同一分钟内）
+    const lastRecord = scanRecords[0];
+    if (lastRecord && isSameMinute(lastRecord.timestamp, record.timestamp)) {
+        lastRecord.items.push(record.items[0]);
+    } else {
+        scanRecords.unshift(record);
+    }
 
+    renderRecords();
     renderProducts();
     updateProgress();
     closeModal();
+}
+
+// 检查两个时间戳是否在同一分钟内
+function isSameMinute(date1, date2) {
+    return Math.abs(date1 - date2) < 60000; // 60000毫秒 = 1分钟
 }
 
 // 更新进度条
@@ -142,28 +154,33 @@ function renderRecords() {
 
     scanRecords.forEach(record => {
         const div = document.createElement('div');
-        div.className = 'record-item';
-        div.innerHTML = `
-            <h3>${record.product}</h3>
-            <p>条码: ${record.barcode}</p>
-            <p>箱数: ${record.boxQuantity}</p>
-            <p>散货数: ${record.pieceQuantity}</p>
-            <p>盘点时间: ${record.timestamp}</p>
-        `;
+        div.className = 'record-group';
+        
+        let recordsHtml = `<div class="record-time">${record.timestamp.toLocaleString()}</div>`;
+        
+        record.items.forEach(item => {
+            recordsHtml += `
+                <div class="record-item">
+                    <h3>${item.name}</h3>
+                    <p>${item.packaging}</p>
+                    <p>数量: ${item.boxQuantity}箱 ${item.pieceQuantity}件</p>
+                </div>
+            `;
+        });
+
+        div.innerHTML = recordsHtml;
         recordsList.appendChild(div);
     });
 }
 
-// 切换页面
-function togglePage() {
-    if (currentPage === 'scan') {
-        document.getElementById('scanPage').classList.remove('active-page');
-        document.getElementById('recordsPage').classList.add('active-page');
-        currentPage = 'records';
-    } else {
-        document.getElementById('scanPage').classList.add('active-page');
-        document.getElementById('recordsPage').classList.remove('active-page');
-        currentPage = 'scan';
+// 显示指定页面
+function showPage(pageName) {
+    document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+    });
+    document.getElementById(`${pageName}Page`).classList.add('active');
+    
+    if (pageName === 'scan') {
         document.getElementById('barcodeInput').focus();
     }
 }
