@@ -495,7 +495,6 @@ const products = [
         scanned: false
     }
 ];
-];
 
 let currentProduct = null;
 let scanRecords = [];
