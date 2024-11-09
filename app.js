@@ -1,18 +1,40 @@
-// 示例产品数据
+// 示例产品数据 - 一个条码对应两个SKU（箱装和散货）
 let products = [
-    { id: "P001", name: "苹果手机", barcode: "123456", stock: 50, scanned: false },
-    { id: "P002", name: "华为平板", barcode: "234567", stock: 30, scanned: false },
-    { id: "P003", name: "小米耳机", barcode: "345678", stock: 100, scanned: false },
-    { id: "P004", name: "联想笔记本", barcode: "456789", stock: 20, scanned: false },
-    { id: "P005", name: "三星手表", barcode: "567890", stock: 40, scanned: false },
-    { id: "P006", name: "OPPO充电器", barcode: "678901", stock: 60, scanned: false },
-    { id: "P007", name: "VIVO保护壳", barcode: "789012", stock: 80, scanned: false },
-    { id: "P008", name: "荣耀手机", barcode: "890123", stock: 25, scanned: false },
-    { id: "P009", name: "魅族耳机", barcode: "901234", stock: 70, scanned: false },
-    { id: "P010", name: "红米手环", barcode: "012345", stock: 45, scanned: false }
+    {
+        barcode: "123456",
+        name: "可口可乐",
+        packaging: "250ml x 24罐/箱",
+        skus: [
+            { type: "box", name: "可口可乐箱装", packaging: "250ml x 24罐/箱" },
+            { type: "piece", name: "可口可乐散装", packaging: "250ml/罐" }
+        ],
+        scanned: false
+    },
+    {
+        barcode: "234567",
+        name: "雀巢咖啡",
+        packaging: "200g x 30包/箱",
+        skus: [
+            { type: "box", name: "雀巢咖啡箱装", packaging: "200g x 30包/箱" },
+            { type: "piece", name: "雀巢咖啡散装", packaging: "200g/包" }
+        ],
+        scanned: false
+    },
+    {
+        barcode: "345678",
+        name: "维他奶",
+        packaging: "250ml x 24盒/箱",
+        skus: [
+            { type: "box", name: "维他奶箱装", packaging: "250ml x 24盒/箱" },
+            { type: "piece", name: "维他奶散装", packaging: "250ml/盒" }
+        ],
+        scanned: false
+    }
 ];
 
 let currentProduct = null;
+let scanRecords = [];
+let currentPage = 'scan';
 
 // 初始化
 window.onload = function() {
@@ -33,9 +55,7 @@ function renderProducts() {
         div.onclick = () => showQuantityModal(product);
         div.innerHTML = `
             <h3>${product.name}</h3>
-            <p>编号: ${product.id}</p>
-            <p>条码: ${product.barcode}</p>
-            <p>库存: ${product.stock}</p>
+            <p>${product.packaging}</p>
         `;
         productList.appendChild(div);
     });
@@ -46,10 +66,7 @@ function searchProduct() {
     const barcode = document.getElementById('barcodeInput').value.trim();
     if (!barcode) return;
 
-    const product = products.find(p => 
-        p.barcode === barcode || 
-        p.id === barcode
-    );
+    const product = products.find(p => p.barcode === barcode);
 
     if (product && !product.scanned) {
         showQuantityModal(product);
@@ -66,10 +83,11 @@ function searchProduct() {
 function showQuantityModal(product) {
     currentProduct = product;
     document.getElementById('modalProductName').textContent = product.name;
-    document.getElementById('modalCurrentStock').textContent = product.stock;
-    document.getElementById('quantityInput').value = '';
+    document.getElementById('modalPackaging').textContent = product.packaging;
+    document.getElementById('boxQuantityInput').value = '';
+    document.getElementById('pieceQuantityInput').value = '';
     document.getElementById('quantityModal').style.display = 'block';
-    document.getElementById('quantityInput').focus();
+    document.getElementById('boxQuantityInput').focus();
 }
 
 // 关闭模态框
@@ -80,19 +98,27 @@ function closeModal() {
 
 // 提交数量
 function submitQuantity() {
-    const quantity = document.getElementById('quantityInput').value;
-    if (!quantity) {
-        alert('请输入数量！');
+    const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
+    const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
+
+    if (boxQuantity === 0 && pieceQuantity === 0) {
+        alert('请至少输入一个数量！');
         return;
     }
 
     currentProduct.scanned = true;
-    currentProduct.actualStock = parseInt(quantity);
 
-    // 如果实际库存与系统库存不符，可以在这里添加处理逻辑
-    if (currentProduct.actualStock !== currentProduct.stock) {
-        console.log(`库存差异: ${currentProduct.name} 系统库存:${currentProduct.stock} 实际库存:${currentProduct.actualStock}`);
-    }
+    // 记录盘点数据
+    const record = {
+        timestamp: new Date().toLocaleString(),
+        product: currentProduct.name,
+        barcode: currentProduct.barcode,
+        boxQuantity: boxQuantity,
+        pieceQuantity: pieceQuantity
+    };
+
+    scanRecords.unshift(record); // 添加到记录开头
+    renderRecords();
 
     renderProducts();
     updateProgress();
@@ -109,6 +135,39 @@ function updateProgress() {
     document.getElementById('progressText').textContent = `${scanned}/${total} 完成`;
 }
 
+// 渲染盘点记录
+function renderRecords() {
+    const recordsList = document.getElementById('recordsList');
+    recordsList.innerHTML = '';
+
+    scanRecords.forEach(record => {
+        const div = document.createElement('div');
+        div.className = 'record-item';
+        div.innerHTML = `
+            <h3>${record.product}</h3>
+            <p>条码: ${record.barcode}</p>
+            <p>箱数: ${record.boxQuantity}</p>
+            <p>散货数: ${record.pieceQuantity}</p>
+            <p>盘点时间: ${record.timestamp}</p>
+        `;
+        recordsList.appendChild(div);
+    });
+}
+
+// 切换页面
+function togglePage() {
+    if (currentPage === 'scan') {
+        document.getElementById('scanPage').classList.remove('active-page');
+        document.getElementById('recordsPage').classList.add('active-page');
+        currentPage = 'records';
+    } else {
+        document.getElementById('scanPage').classList.add('active-page');
+        document.getElementById('recordsPage').classList.remove('active-page');
+        currentPage = 'scan';
+        document.getElementById('barcodeInput').focus();
+    }
+}
+
 // 支持回车键搜索
 document.getElementById('barcodeInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
@@ -116,8 +175,14 @@ document.getElementById('barcodeInput').addEventListener('keypress', function(e)
     }
 });
 
-// 支持回车键提交数量
-document.getElementById('quantityInput').addEventListener('keypress', function(e) {
+// 支持回车键在数量输入框之间切换和提交
+document.getElementById('boxQuantityInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        document.getElementById('pieceQuantityInput').focus();
+    }
+});
+
+document.getElementById('pieceQuantityInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         submitQuantity();
     }
