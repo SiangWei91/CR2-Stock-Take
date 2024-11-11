@@ -578,6 +578,27 @@ const products = [
 let currentProduct = null;
 let scanRecords = [];
 
+
+function setupBarcodeScanner() {
+    const barcodeInput = document.getElementById('barcodeInput');
+    let timeoutId = null;
+    const SCANNER_TIMEOUT = 50; // Scanner typically finishes within 50ms
+
+    barcodeInput.addEventListener('input', function(e) {
+        // Clear any existing timeout
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        // Set new timeout
+        timeoutId = setTimeout(() => {
+            const barcode = this.value.trim();
+            if (barcode) {
+                searchProduct();
+            }
+        }, SCANNER_TIMEOUT);
+    });
+}
 // 初始化
 window.onload = function() {
     renderProducts();
