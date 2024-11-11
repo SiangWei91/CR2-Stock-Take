@@ -578,6 +578,13 @@ const products = [
 let currentProduct = null;
 let scanRecords = [];
 
+
+// 初始化
+window.onload = function() {
+    renderProducts();
+    updateProgress();
+    document.getElementById('barcodeInput').focus();
+}
 document.addEventListener('DOMContentLoaded', function() {
     setupBarcodeScanner();
 
@@ -601,13 +608,6 @@ function setupBarcodeScanner() {
         }, SCANNER_TIMEOUT);
     });
 }
-// 初始化
-window.onload = function() {
-    renderProducts();
-    updateProgress();
-    document.getElementById('barcodeInput').focus();
-}
-
 // 渲染产品列表
 function renderProducts() {
     const productList = document.getElementById('productList');
