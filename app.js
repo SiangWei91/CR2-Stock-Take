@@ -126,17 +126,19 @@ function submitQuantity() {
 
     currentProduct.scanned = true;
 
-    // Store timestamp as string immediately when creating record
-    const currentTime = new Date().toLocaleString();
+    // Create clean timestamp without comma
+    const now = new Date();
+    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
+    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
     
     const record = {
-        timestamp: currentTime,
+        timestamp: `${date} ${time}`,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: currentTime
+            timestamp: `${date} ${time}`
         }]
     };
 
@@ -238,6 +240,7 @@ async function submitToGoogleSheet() {
     loadingOverlay.style.display = 'block';
 
     try {
+        // Process all records in a single batch
         const data = scanRecords.flatMap(record => 
             record.items.map(item => {
                 // Find the product from products array
@@ -246,8 +249,14 @@ async function submitToGoogleSheet() {
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
+                // Format timestamp to remove comma
+                const [datePart, timePart] = item.timestamp.split(',');
+                const cleanDate = datePart.trim();
+                const cleanTime = timePart.trim();
+                
                 return {
-                    timestamp: item.timestamp,
+                    date: cleanDate,
+                    time: cleanTime,
                     name: item.name,
                     packaging: item.packaging,
                     boxQuantity: item.boxQuantity,
@@ -259,6 +268,7 @@ async function submitToGoogleSheet() {
             })
         );
 
+        // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
@@ -279,4 +289,40 @@ async function submitToGoogleSheet() {
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
     }
+}
+
+// Also update where you create the record to store date and time separately
+function submitQuantity() {
+    const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
+    const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
+
+    if (boxQuantity === 0 && pieceQuantity === 0) {
+        alert('请至少输入一个数量！');
+        return;
+    }
+
+    currentProduct.scanned = true;
+
+    // Create clean timestamp without comma
+    const now = new Date();
+    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
+    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
+    
+    const record = {
+        timestamp: `${date} ${time}`,
+        items: [{
+            name: currentProduct.name,
+            packaging: currentProduct.packaging,
+            boxQuantity: boxQuantity,
+            pieceQuantity: pieceQuantity,
+            timestamp: `${date} ${time}`
+        }]
+    };
+
+    scanRecords.unshift(record);
+
+    renderRecords();
+    renderProducts();
+    updateProgress();
+    closeModal();
 }
