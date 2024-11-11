@@ -732,41 +732,7 @@ function closeModal() {
     document.getElementById('barcodeInput').focus();
 }
 
-// 提交数量
-function submitQuantity() {
-    const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
-    const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
-    if (boxQuantity === 0 && pieceQuantity === 0) {
-        showCustomAlert('请至少输入一个数量！');
-        return;
-    }
-
-    currentProduct.scanned = true;
-
-    // Create clean timestamp without comma
-    const now = new Date();
-    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
-    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
-    
-    const record = {
-        timestamp: `${date} ${time}`,
-        items: [{
-            name: currentProduct.name,
-            packaging: currentProduct.packaging,
-            boxQuantity: boxQuantity,
-            pieceQuantity: pieceQuantity,
-            timestamp: `${date} ${time}`
-        }]
-    };
-
-    scanRecords.unshift(record);
-
-    renderRecords();
-    renderProducts();
-    updateProgress();
-    closeModal();
-}
 
 // 检查两个时间戳是否在同一分钟内
 function isSameMinute(date1, date2) {
@@ -845,15 +811,14 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        showCustomAlert('请选择盘点人员！');
+        alert('请选择盘点人员！');
         return;
     }
     
     if (scanRecords.length === 0) {
-        showCustomAlert('没有可提交的记录！');
+        alert('没有可提交的记录！');
         return;
     }
-
 
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -869,14 +834,23 @@ async function submitToGoogleSheet() {
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
-                // Format timestamp to remove comma
-                const [datePart, timePart] = item.timestamp.split(',');
-                const cleanDate = datePart.trim();
-                const cleanTime = timePart.trim();
+                // Format timestamp correctly
+                const timestamp = new Date(item.timestamp);
+                const date = timestamp.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const time = timestamp.toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
                 
                 return {
-                    date: cleanDate,
-                    time: cleanTime,
+                    date: date,
+                    time: time,
                     name: item.name,
                     packaging: item.packaging,
                     boxQuantity: item.boxQuantity,
@@ -895,7 +869,8 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            showCustomAlert('数据提交成功！');
+            alert('数据提交成功！');
+            // Clear records after successful submission
             scanRecords = [];
             renderRecords();
         } else {
@@ -903,10 +878,45 @@ async function submitToGoogleSheet() {
         }
     } catch (error) {
         console.error('Error:', error);
-        showCustomAlert('提交失败，请重试！');
+        alert('提交失败，请重试！');
     } finally {
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
     }
 }
+
+// And update the submitQuantity function to store timestamp as a Date object
+function submitQuantity() {
+    const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
+    const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
+
+    if (boxQuantity === 0 && pieceQuantity === 0) {
+        alert('请至少输入一个数量！');
+        return;
+    }
+
+    currentProduct.scanned = true;
+    
+    // Store timestamp as Date object
+    const timestamp = new Date();
+    
+    const record = {
+        timestamp: timestamp,
+        items: [{
+            name: currentProduct.name,
+            packaging: currentProduct.packaging,
+            boxQuantity: boxQuantity,
+            pieceQuantity: pieceQuantity,
+            timestamp: timestamp
+        }]
+    };
+
+    scanRecords.unshift(record);
+
+    renderRecords();
+    renderProducts();
+    updateProgress();
+    closeModal();
+}
+
 
