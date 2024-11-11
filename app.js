@@ -828,7 +828,7 @@ function updateProgress() {
     const percentage = (scanned / total) * 100;
     
     document.getElementById('progressBar').style.width = percentage + '%';
-    document.getElementById('progressText').textContent = `${scanned}/${total} 完成`;
+    document.getElementById('progressText').textContent = `${scanned}/${total} 完成度 | Progress`;
 }
 
 // 渲染盘点记录
@@ -893,12 +893,12 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        showCustomAlert('请选择盘点人员！');
+        showCustomAlert('请选择盘点人员！| Please Choose Operator');
         return;
     }
     
     if (scanRecords.length === 0) {
-        showCustomAlert('没有可提交的记录！');
+        showCustomAlert('没有可提交的记录！| No Data Submit');
         return;
     }
     // Show loading overlay
@@ -950,15 +950,15 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            showCustomAlert('数据提交成功！');
+            showCustomAlert('数据提交成功！| Successful');
             scanRecords = [];
             renderRecords();
         } else {
-            throw new Error('提交失败');
+            throw new Error('提交失败 | Fail');
         }
     } catch (error) {
         console.error('Error:', error);
-        showCustomAlert('提交失败，请重试！');
+        showCustomAlert('提交失败，请重试！| Error Try Again');
     } finally {
         loadingOverlay.style.display = 'none';
     }
@@ -970,7 +970,7 @@ function submitQuantity() {
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
     if (boxQuantity === 0 && pieceQuantity === 0) {
-        showCustomAlert('请至少输入一个数量！');
+        showCustomAlert('请至少输入一个数量！| Please at least fill some Quantity');
         return;
     }
 
