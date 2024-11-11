@@ -176,7 +176,7 @@ const products = [
         packaging: "250g x 30pkt",
         skus: [
             { type: "CTN", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g x 30pkt", itemCode: "40600" },
-            { type: "CTN", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g/pkt", itemCode: "40601" }
+            { type: "PKT", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g/pkt", itemCode: "40601" }
         ],
         scanned: false
     },
@@ -476,7 +476,7 @@ const products = [
     },
     {
         barcode: "10603",
-        name: "竹轮 CHIKUWA",
+        name: "竹轮 CHIKUWA 1kg",
         packaging: "1kg x 8pkt",
         skus: [
             { type: "CTN", name: "竹轮 CHIKUWA", packaging: "1kg x 8pkt", itemCode: "10603" },
@@ -486,7 +486,7 @@ const products = [
     },
     {
         barcode: "10604",
-        name: "竹轮 CHIKUWA",
+        name: "竹轮 CHIKUWA 200g",
         packaging: "200g x 40pkt",
         skus: [
             { type: "CTN", name: "竹轮 CHIKUWA", packaging: "200g x 40pkt", itemCode: "10604" },
