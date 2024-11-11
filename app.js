@@ -585,29 +585,7 @@ window.onload = function() {
     updateProgress();
     document.getElementById('barcodeInput').focus();
 }
-document.addEventListener('DOMContentLoaded', function() {
-    setupBarcodeScanner();
 
-function setupBarcodeScanner() {
-    const barcodeInput = document.getElementById('barcodeInput');
-    let timeoutId = null;
-    const SCANNER_TIMEOUT = 50; // Scanner typically finishes within 50ms
-
-    barcodeInput.addEventListener('input', function(e) {
-        // Clear any existing timeout
-        if (timeoutId) {
-            clearTimeout(timeoutId);
-        }
-
-        // Set new timeout
-        timeoutId = setTimeout(() => {
-            const barcode = this.value.trim();
-            if (barcode) {
-                searchProduct();
-            }
-        }, SCANNER_TIMEOUT);
-    });
-}
 // 渲染产品列表
 function renderProducts() {
     const productList = document.getElementById('productList');
@@ -627,6 +605,8 @@ function renderProducts() {
 }
 
 // 搜索产品
+// Search product function - now includes delay handling
+let searchTimeout;
 function searchProduct() {
     const barcode = document.getElementById('barcodeInput').value.trim();
     if (!barcode) return;
@@ -644,6 +624,49 @@ function searchProduct() {
     document.getElementById('barcodeInput').value = '';
 }
 
+// Initialize
+window.onload = function() {
+    renderProducts();
+    updateProgress();
+    setupBarcodeInput();
+}
+
+// New function to setup barcode input with auto-trigger
+function setupBarcodeInput() {
+    const barcodeInput = document.getElementById('barcodeInput');
+    
+    // Focus the input when page loads
+    barcodeInput.focus();
+    
+    // Add input event listener for auto-triggering
+    barcodeInput.addEventListener('input', function(e) {
+        // Clear any existing timeout
+        if (searchTimeout) {
+            clearTimeout(searchTimeout);
+        }
+        
+        // Get the current input value
+        const barcode = e.target.value.trim();
+        
+        // If the barcode is long enough (you can adjust this length)
+        if (barcode.length >= 5) {  // Assuming minimum barcode length is 5
+            // Set a small timeout to allow for complete barcode scan
+            searchTimeout = setTimeout(() => {
+                searchProduct();
+            }, 300);  // 300ms delay, adjust as needed
+        }
+    });
+
+    // Keep the Enter key functionality as backup
+    barcodeInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            searchProduct();
+        }
+    });
+}
 // 显示数量输入模态框
 function showQuantityModal(product) {
     currentProduct = product;
