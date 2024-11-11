@@ -848,7 +848,7 @@ function renderRecords() {
                 <div class="record-item">
                     <h3>${item.name}</h3>
                     <p>${item.packaging}</p>
-                    <p>数量: ${item.boxQuantity}箱 ${item.pieceQuantity}件</p>
+                    <p>数量: ${item.boxQuantity}箱 | CTN ${item.pieceQuantity}包 | PKT</p>
                 </div>
             `;
         });
