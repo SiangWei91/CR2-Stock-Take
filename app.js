@@ -578,6 +578,8 @@ const products = [
 let currentProduct = null;
 let scanRecords = [];
 
+document.addEventListener('DOMContentLoaded', function() {
+    setupBarcodeScanner();
 
 function setupBarcodeScanner() {
     const barcodeInput = document.getElementById('barcodeInput');
