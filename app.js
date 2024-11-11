@@ -586,7 +586,94 @@ window.onload = function() {
     document.getElementById('barcodeInput').focus();
 }
 
+function createCustomAlert() {
+    // Create the styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-alert-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-button {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Create the alert elements
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'custom-alert';
+    alertDiv.id = 'customAlert';
+    
+    alertDiv.innerHTML = `
+        <div class="custom-alert-content">
+            <p id="alertMessage"></p>
+            <button onclick="closeCustomAlert()" class="alert-button">确定</button>
+        </div>
+    `;
+
+    // Add click handler for closing when clicking outside
+    alertDiv.addEventListener('click', function(e) {
+        if (e.target === alertDiv) {
+            closeCustomAlert();
+        }
+    });
+
+    document.body.appendChild(alertDiv);
+}
+
+// Function to show custom alert
 function showCustomAlert(message) {
+    // Create alert elements if they don't exist
+    if (!document.getElementById('customAlert')) {
+        createCustomAlert();
+    }
+    
     const alertEl = document.getElementById('customAlert');
     const messageEl = document.getElementById('alertMessage');
     messageEl.textContent = message;
@@ -594,23 +681,19 @@ function showCustomAlert(message) {
     
     // Focus the OK button
     const button = alertEl.querySelector('button');
-    button.focus();
-    
-    // Also close alert when clicking outside
-    alertEl.addEventListener('click', function(e) {
-        if (e.target === alertEl) {
-            closeCustomAlert();
-        }
-    });
+    if (button) button.focus();
 }
 
+// Function to close custom alert
 function closeCustomAlert() {
     const alertEl = document.getElementById('customAlert');
-    alertEl.style.display = 'none';
-    
-    // Restore focus to barcode input if on scan page
-    if (document.getElementById('scanPage').classList.contains('active')) {
-        document.getElementById('barcodeInput').focus();
+    if (alertEl) {
+        alertEl.style.display = 'none';
+        
+        // Restore focus to barcode input if on scan page
+        if (document.getElementById('scanPage').classList.contains('active')) {
+            document.getElementById('barcodeInput').focus();
+        }
     }
 }
 
@@ -651,7 +734,6 @@ function searchProduct() {
 
     document.getElementById('barcodeInput').value = '';
 }
-
 // Initialize
 window.onload = function() {
     renderProducts();
@@ -811,15 +893,14 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        alert('请选择盘点人员！');
+        showCustomAlert('请选择盘点人员！');
         return;
     }
     
     if (scanRecords.length === 0) {
-        alert('没有可提交的记录！');
+        showCustomAlert('没有可提交的记录！');
         return;
     }
-
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
     loadingOverlay.style.display = 'block';
@@ -869,8 +950,7 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            alert('数据提交成功！');
-            // Clear records after successful submission
+            showCustomAlert('数据提交成功！');
             scanRecords = [];
             renderRecords();
         } else {
@@ -878,9 +958,8 @@ async function submitToGoogleSheet() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('提交失败，请重试！');
+        showCustomAlert('提交失败，请重试！');
     } finally {
-        // Hide loading overlay
         loadingOverlay.style.display = 'none';
     }
 }
@@ -891,7 +970,7 @@ function submitQuantity() {
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
     if (boxQuantity === 0 && pieceQuantity === 0) {
-        alert('请至少输入一个数量！');
+        showCustomAlert('请至少输入一个数量！');
         return;
     }
 
