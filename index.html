@@ -6,7 +6,7 @@
     <meta name="description" content="A simple PWA barcode scanner">
     <meta name="theme-color" content="#000000">
     <link rel="manifest" href="/CR2-Stock-Take/manifest.json">
-    <title>库存盘点系统</title>
+    <title>Cold Room 2 Stock Take</title>
     <style>
         * { box-sizing: border-box; }
         body { 
@@ -235,15 +235,15 @@
 <body>
     <div id="scanPage" class="page active">
         <div class="header">
-            <h1>库存盘点</h1>
+            <h1>2号房库存盘点 | CR2 Stock Take</h1>
             <div class="progress">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
-            <span id="progressText">0/0 完成</span>
+            <span id="progressText">0/0 完成度 | Progress</span>
         </div>
 
         <div class="input-section">
-            <input type="text" id="barcodeInput" placeholder="扫描条码" autofocus>
+            <input type="text" id="barcodeInput" placeholder="扫描条码 | Scan Barcode" autofocus>
         </div>
 
         <div class="product-list" id="productList">
@@ -255,14 +255,14 @@
                 <h2 id="modalProductName"></h2>
                 <p id="modalPackaging"></p>
                 <div class="quantity-input">
-                    <label>箱数量：</label>
-                    <input type="number" id="boxQuantityInput" placeholder="输入箱数">
-                    <label>散货数量：</label>
-                    <input type="number" id="pieceQuantityInput" placeholder="输入散货数">
+                    <label>箱数量 | Ctn Qty：</label>
+                    <input type="number" id="boxQuantityInput" placeholder="输入箱数 | Input Ctn Qty">
+                    <label>散货数量 | Pkt Qty：</label>
+                    <input type="number" id="pieceQuantityInput" placeholder="输入散货数 | Input Pkt Qty">
                 </div>
                 <div class="btn-group">
-                    <button class="btn-confirm" onclick="submitQuantity()">确认</button>
-                    <button class="btn-cancel" onclick="closeModal()">取消</button>
+                    <button class="btn-confirm" onclick="submitQuantity()">确认 | Confirm</button>
+                    <button class="btn-cancel" onclick="closeModal()">取消 | Cancel</button>
                 </div>
             </div>
         </div>
@@ -270,32 +270,32 @@
 
     <div id="recordsPage" class="page">
         <div class="header">
-            <h1>盘点记录</h1>
+            <h1>盘点记录 | Stock Take Record</h1>
         </div>
         <div class="records-list" id="recordsList">
             <!-- Records will be generated here -->
         </div>
         <div class="submit-section">
             <select id="counterSelect">
-                <option value="">选择盘点人员</option>
-                <option value="Jayden">Jayden</option>
-                <option value="Alex">Alex</option>
+                <option value="">盘点人员 | Operator</option>
+                <option value="MaTianXiang">Ma Tian Xiang</option>
+                <option value="CaoMeng">Cao Meng</option>
                 <option value="CK">CK</option>
             </select>
-            <button onclick="submitToGoogleSheet()">提交数据</button>
+            <button onclick="submitToGoogleSheet()">保存 | Save</button>
         </div>
     </div>
 
     <div class="loading" id="loadingOverlay">
         <div class="loading-content">
             <div class="spinner"></div>
-            <p id="loadingMessage">正在提交数据...</p>
+            <p id="loadingMessage">正在提交数据 | Loading...</p>
         </div>
     </div>
 
     <div class="nav-buttons">
-        <button onclick="showPage('scan')">盘点页面</button>
-        <button onclick="showPage('records')">查看记录</button>
+        <button onclick="showPage('scan')">盘点 | Stock Take</button>
+        <button onclick="showPage('records')">记录 | Record</button>
     </div>
 
     <script src="app.js"></script>
