@@ -404,4 +404,3 @@ function submitQuantity() {
     updateProgress();
     closeModal();
 }
-}
