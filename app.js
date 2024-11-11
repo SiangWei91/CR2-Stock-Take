@@ -83,12 +83,32 @@ function showQuantityModal(product) {
     currentProduct = product;
     document.getElementById('modalProductName').textContent = product.name;
     document.getElementById('modalPackaging').textContent = product.packaging;
+    
+    // Check if product has box quantity
+    const hasBoxQuantity = product.skus.some(sku => sku.type === "CTN");
+    
+    const boxQuantityInput = document.getElementById('boxQuantityInput');
+    const boxQuantityLabel = boxQuantityInput.previousElementSibling;
+    
+    if (!hasBoxQuantity) {
+        boxQuantityInput.style.display = 'none';
+        boxQuantityLabel.style.display = 'none';
+    } else {
+        boxQuantityInput.style.display = 'block';
+        boxQuantityLabel.style.display = 'block';
+    }
+    
     document.getElementById('boxQuantityInput').value = '';
     document.getElementById('pieceQuantityInput').value = '';
     document.getElementById('quantityModal').style.display = 'block';
-    document.getElementById('boxQuantityInput').focus();
+    
+    // Focus on appropriate input based on product type
+    if (hasBoxQuantity) {
+        document.getElementById('boxQuantityInput').focus();
+    } else {
+        document.getElementById('pieceQuantityInput').focus();
+    }
 }
-
 // 关闭模态框
 function closeModal() {
     document.getElementById('quantityModal').style.display = 'none';
@@ -204,3 +224,54 @@ document.getElementById('pieceQuantityInput').addEventListener('keypress', funct
         submitQuantity();
     }
 });
+
+async function submitToGoogleSheet() {
+    const counter = document.getElementById('counterSelect').value;
+    
+    if (!counter) {
+        alert('请选择盘点人员！');
+        return;
+    }
+    
+    if (scanRecords.length === 0) {
+        alert('没有可提交的记录！');
+        return;
+    }
+
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'block';
+
+    try {
+        const data = scanRecords.flatMap(record => 
+            record.items.map(item => ({
+                timestamp: item.timestamp.toLocaleString(),
+                name: item.name,
+                packaging: item.packaging,
+                boxQuantity: item.boxQuantity,
+                pieceQuantity: item.pieceQuantity,
+                counter: counter
+            }))
+        );
+
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('数据提交成功！');
+            // Clear records after successful submission
+            scanRecords = [];
+            renderRecords();
+        } else {
+            throw new Error('提交失败');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('提交失败，请重试！');
+    } finally {
+        // Hide loading overlay
+        loadingOverlay.style.display = 'none';
+    }
+}
