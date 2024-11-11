@@ -783,28 +783,37 @@ async function submitToGoogleSheet() {
 
     try {
         const data = scanRecords.flatMap(record => 
-            record.items.map(item => ({
-                timestamp: item.timestamp, // Now using the stored string timestamp
-                name: item.name,
-                packaging: item.packaging,
-                boxQuantity: item.boxQuantity,
-                pieceQuantity: item.pieceQuantity,
-                counter: counter
-            }))
+            record.items.map(item => {
+                const timestamp = new Date(item.timestamp);
+                return {
+                    Date: timestamp.toLocaleDateString(),
+                    Time: timestamp.toLocaleTimeString(),
+                    ItemCode: item.skus ? item.skus[0].itemCode : '', // Get ItemCode from product data
+                    Product: item.name,
+                    PackingSize: item.packaging,
+                    Quantity: item.boxQuantity ? `${item.boxQuantity}箱 ${item.pieceQuantity}件` : `${item.pieceQuantity}件`,
+                    StockCheckBy: counter
+                };
+            })
         );
 
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
             body: JSON.stringify(data)
         });
 
-        if (response.ok) {
+        const result = await response.json();
+        
+        if (result.success) {
             alert('数据提交成功！');
             // Clear records after successful submission
             scanRecords = [];
             renderRecords();
         } else {
-            throw new Error('提交失败');
+            throw new Error(result.error || '提交失败');
         }
     } catch (error) {
         console.error('Error:', error);
@@ -814,4 +823,3 @@ async function submitToGoogleSheet() {
         loadingOverlay.style.display = 'none';
     }
 }
-
