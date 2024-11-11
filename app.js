@@ -174,7 +174,8 @@ function renderRecords() {
         const div = document.createElement('div');
         div.className = 'record-group';
         
-        let recordsHtml = `<div class="record-time">${record.timestamp}</div>`;
+        const formattedTime = new Date(record.timestamp).toLocaleString();
+        let recordsHtml = `<div class="record-time">${formattedTime}</div>`;
         
         record.items.forEach(item => {
             recordsHtml += `
@@ -292,6 +293,85 @@ async function submitToGoogleSheet() {
 }
 
 // Also update where you create the record to store date and time separately
+async function submitToGoogleSheet() {
+    const counter = document.getElementById('counterSelect').value;
+    
+    if (!counter) {
+        alert('请选择盘点人员！');
+        return;
+    }
+    
+    if (scanRecords.length === 0) {
+        alert('没有可提交的记录！');
+        return;
+    }
+
+    // Show loading overlay
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    loadingOverlay.style.display = 'block';
+
+    try {
+        // Process all records in a single batch
+        const data = scanRecords.flatMap(record => 
+            record.items.map(item => {
+                // Find the product from products array
+                const product = products.find(p => p.name === item.name);
+                // Get CTN and PKT item codes from skus
+                const ctnSku = product.skus.find(sku => sku.type === "CTN");
+                const pktSku = product.skus.find(sku => sku.type === "PKT");
+                
+                // Format timestamp correctly
+                const timestamp = new Date(item.timestamp);
+                const date = timestamp.toLocaleDateString('en-US', { 
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+                const time = timestamp.toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                return {
+                    date: date,
+                    time: time,
+                    name: item.name,
+                    packaging: item.packaging,
+                    boxQuantity: item.boxQuantity,
+                    pieceQuantity: item.pieceQuantity,
+                    ctnItemCode: ctnSku ? ctnSku.itemCode : '',
+                    pktItemCode: pktSku ? pktSku.itemCode : '',
+                    counter: counter
+                };
+            })
+        );
+
+        // Single API call with all data
+        const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+
+        if (response.ok) {
+            alert('数据提交成功！');
+            // Clear records after successful submission
+            scanRecords = [];
+            renderRecords();
+        } else {
+            throw new Error('提交失败');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('提交失败，请重试！');
+    } finally {
+        // Hide loading overlay
+        loadingOverlay.style.display = 'none';
+    }
+}
+
+// And update the submitQuantity function to store timestamp as a Date object
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
@@ -302,20 +382,18 @@ function submitQuantity() {
     }
 
     currentProduct.scanned = true;
-
-    // Create clean timestamp without comma
-    const now = new Date();
-    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
-    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
+    
+    // Store timestamp as Date object
+    const timestamp = new Date();
     
     const record = {
-        timestamp: `${date} ${time}`,
+        timestamp: timestamp,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: `${date} ${time}`
+            timestamp: timestamp
         }]
     };
 
@@ -325,4 +403,5 @@ function submitQuantity() {
     renderProducts();
     updateProgress();
     closeModal();
+}
 }
