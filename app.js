@@ -96,7 +96,7 @@ const products = [
         packaging: "250g x 40pkt",
         skus: [
             { type: "CTN", name: "虾蕾 SHRIMP BOMB", packaging: "250g x 40pkt", itemCode: "50200" },
-            { type: "TRAY", name: "虾蕾 SHRIMP BOMB", packaging: "250g/pkt", itemCode: "50201" }
+            { type: "PKT", name: "虾蕾 SHRIMP BOMB", packaging: "250g/pkt", itemCode: "50201" }
         ],
         scanned: false
     },
@@ -176,7 +176,7 @@ const products = [
         packaging: "250g x 30pkt",
         skus: [
             { type: "CTN", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g x 30pkt", itemCode: "40600" },
-            { type: "TRAY", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g/pkt", itemCode: "40601" }
+            { type: "CTN", name: "人造蟹钳 IMITATION CRAB CLAW", packaging: "250g/pkt", itemCode: "40601" }
         ],
         scanned: false
     },
@@ -221,7 +221,7 @@ const products = [
         name: "(奥)三文治豆腐 SANDWICH TOFU",
         packaging: "1kg/pkt",
         skus: [
-            { type: "KG", name: "(奥)三文治豆腐 SANDWICH TOFU", packaging: "1kg/pkt", itemCode: "50151" }
+            { type: "PKT", name: "(奥)三文治豆腐 SANDWICH TOFU", packaging: "1kg/pkt", itemCode: "50151" }
         ],
         scanned: false
     },
@@ -250,7 +250,7 @@ const products = [
         packaging: "1kg x 10pkt",
         skus: [
             { type: "CTN", name: "香菇丸 MUSHROOM BALL", packaging: "1kg x 10pkt", itemCode: "24000" },
-            { type: "KG", name: "香菇丸 MUSHROOM BALL", packaging: "1kg/pkt", itemCode: "24001" }
+            { type: "PKT", name: "香菇丸 MUSHROOM BALL", packaging: "1kg/pkt", itemCode: "24001" }
         ],
         scanned: false
     },
@@ -280,7 +280,7 @@ const products = [
         packaging: "320g x 28pkt",
         skus: [
             { type: "CTN", name: "虾仁卷 SHRIMP ROLL", packaging: "320g x 28pkt", itemCode: "40650" },
-            { type: "TRAY", name: "虾仁卷 SHRIMP ROLL", packaging: "320g/pkt", itemCode: "40651" }
+            { type: "PKT", name: "虾仁卷 SHRIMP ROLL", packaging: "320g/pkt", itemCode: "40651" }
         ],
         scanned: false
     },
@@ -300,7 +300,7 @@ const products = [
         packaging: "1kg x 10pkt",
         skus: [
             { type: "CTN", name: "爱心豆腐 CHEESY LOVE", packaging: "1kg x 10pkt", itemCode: "28040" },
-            { type: "KG", name: "爱心豆腐 CHEESY LOVE", packaging: "1kg/pkt", itemCode: "28041" }
+            { type: "PKT", name: "爱心豆腐 CHEESY LOVE", packaging: "1kg/pkt", itemCode: "28041" }
         ],
         scanned: false
     },
@@ -470,7 +470,7 @@ const products = [
         packaging: "160g x 20pkts",
         skus: [
             { type: "CTN", name: "金带子 BREADED SURIMI SCALLOP", packaging: "160g x 20pkts", itemCode: "30200" },
-            { type: "TRAY", name: "金带子 BREADED SURIMI SCALLOP", packaging: "160g/tray", itemCode: "30210" }
+            { type: "PKT", name: "金带子 BREADED SURIMI SCALLOP", packaging: "160g/tray", itemCode: "30210" }
         ],
         scanned: false
     },
@@ -480,7 +480,7 @@ const products = [
         packaging: "1kg x 8pkt",
         skus: [
             { type: "CTN", name: "竹轮 CHIKUWA", packaging: "1kg x 8pkt", itemCode: "10603" },
-            { type: "KG", name: "竹轮 CHIKUWA", packaging: "1kg/pkt", itemCode: "10601" }
+            { type: "PKT", name: "竹轮 CHIKUWA", packaging: "1kg/pkt", itemCode: "10601" }
         ],
         scanned: false
     },
