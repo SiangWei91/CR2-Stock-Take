@@ -670,24 +670,21 @@ function submitQuantity() {
 
     currentProduct.scanned = true;
 
-    // 记录盘点数据
+    // Store timestamp as string immediately when creating record
+    const currentTime = new Date().toLocaleString();
+    
     const record = {
-        timestamp: new Date(),
+        timestamp: currentTime,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
-            pieceQuantity: pieceQuantity
+            pieceQuantity: pieceQuantity,
+            timestamp: currentTime
         }]
     };
 
-    // 检查是否有相同时间戳的记录组（同一分钟内）
-    const lastRecord = scanRecords[0];
-    if (lastRecord && isSameMinute(lastRecord.timestamp, record.timestamp)) {
-        lastRecord.items.push(record.items[0]);
-    } else {
-        scanRecords.unshift(record);
-    }
+    scanRecords.unshift(record);
 
     renderRecords();
     renderProducts();
@@ -719,7 +716,7 @@ function renderRecords() {
         const div = document.createElement('div');
         div.className = 'record-group';
         
-        let recordsHtml = `<div class="record-time">${record.timestamp.toLocaleString()}</div>`;
+        let recordsHtml = `<div class="record-time">${record.timestamp}</div>`;
         
         record.items.forEach(item => {
             recordsHtml += `
@@ -735,7 +732,6 @@ function renderRecords() {
         recordsList.appendChild(div);
     });
 }
-
 // 显示指定页面
 function showPage(pageName) {
     document.querySelectorAll('.page').forEach(page => {
@@ -788,7 +784,7 @@ async function submitToGoogleSheet() {
     try {
         const data = scanRecords.flatMap(record => 
             record.items.map(item => ({
-                timestamp: item.timestamp.toLocaleString(),
+                timestamp: item.timestamp, // Now using the stored string timestamp
                 name: item.name,
                 packaging: item.packaging,
                 boxQuantity: item.boxQuantity,
@@ -818,3 +814,4 @@ async function submitToGoogleSheet() {
         loadingOverlay.style.display = 'none';
     }
 }
+
