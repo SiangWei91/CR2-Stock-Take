@@ -586,6 +586,34 @@ window.onload = function() {
     document.getElementById('barcodeInput').focus();
 }
 
+function showCustomAlert(message) {
+    const alertEl = document.getElementById('customAlert');
+    const messageEl = document.getElementById('alertMessage');
+    messageEl.textContent = message;
+    alertEl.style.display = 'block';
+    
+    // Focus the OK button
+    const button = alertEl.querySelector('button');
+    button.focus();
+    
+    // Also close alert when clicking outside
+    alertEl.addEventListener('click', function(e) {
+        if (e.target === alertEl) {
+            closeCustomAlert();
+        }
+    });
+}
+
+function closeCustomAlert() {
+    const alertEl = document.getElementById('customAlert');
+    alertEl.style.display = 'none';
+    
+    // Restore focus to barcode input if on scan page
+    if (document.getElementById('scanPage').classList.contains('active')) {
+        document.getElementById('barcodeInput').focus();
+    }
+}
+
 // 渲染产品列表
 function renderProducts() {
     const productList = document.getElementById('productList');
@@ -616,9 +644,9 @@ function searchProduct() {
     if (product && !product.scanned) {
         showQuantityModal(product);
     } else if (product && product.scanned) {
-        alert('此产品已经盘点过了！');
+        showCustomAlert('此产品已经盘点过了！');
     } else {
-        alert('未找到产品！');
+        showCustomAlert('未找到产品！');
     }
 
     document.getElementById('barcodeInput').value = '';
@@ -710,7 +738,7 @@ function submitQuantity() {
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
     if (boxQuantity === 0 && pieceQuantity === 0) {
-        alert('请至少输入一个数量！');
+        showCustomAlert('请至少输入一个数量！');
         return;
     }
 
@@ -817,14 +845,15 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        alert('请选择盘点人员！');
+        showCustomAlert('请选择盘点人员！');
         return;
     }
     
     if (scanRecords.length === 0) {
-        alert('没有可提交的记录！');
+        showCustomAlert('没有可提交的记录！');
         return;
     }
+
 
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
@@ -866,8 +895,7 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            alert('数据提交成功！');
-            // Clear records after successful submission
+            showCustomAlert('数据提交成功！');
             scanRecords = [];
             renderRecords();
         } else {
@@ -875,122 +903,10 @@ async function submitToGoogleSheet() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('提交失败，请重试！');
+        showCustomAlert('提交失败，请重试！');
     } finally {
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
     }
 }
 
-// Also update where you create the record to store date and time separately
-async function submitToGoogleSheet() {
-    const counter = document.getElementById('counterSelect').value;
-    
-    if (!counter) {
-        alert('请选择盘点人员！');
-        return;
-    }
-    
-    if (scanRecords.length === 0) {
-        alert('没有可提交的记录！');
-        return;
-    }
-
-    // Show loading overlay
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    loadingOverlay.style.display = 'block';
-
-    try {
-        // Process all records in a single batch
-        const data = scanRecords.flatMap(record => 
-            record.items.map(item => {
-                // Find the product from products array
-                const product = products.find(p => p.name === item.name);
-                // Get CTN and PKT item codes from skus
-                const ctnSku = product.skus.find(sku => sku.type === "CTN");
-                const pktSku = product.skus.find(sku => sku.type === "PKT");
-                
-                // Format timestamp correctly
-                const timestamp = new Date(item.timestamp);
-                const date = timestamp.toLocaleDateString('en-US', { 
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                });
-                const time = timestamp.toLocaleTimeString('en-US', {
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
-                
-                return {
-                    date: date,
-                    time: time,
-                    name: item.name,
-                    packaging: item.packaging,
-                    boxQuantity: item.boxQuantity,
-                    pieceQuantity: item.pieceQuantity,
-                    ctnItemCode: ctnSku ? ctnSku.itemCode : '',
-                    pktItemCode: pktSku ? pktSku.itemCode : '',
-                    counter: counter
-                };
-            })
-        );
-
-        // Single API call with all data
-        const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
-            method: 'POST',
-            body: JSON.stringify(data)
-        });
-
-        if (response.ok) {
-            alert('数据提交成功！');
-            // Clear records after successful submission
-            scanRecords = [];
-            renderRecords();
-        } else {
-            throw new Error('提交失败');
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        alert('提交失败，请重试！');
-    } finally {
-        // Hide loading overlay
-        loadingOverlay.style.display = 'none';
-    }
-}
-
-// And update the submitQuantity function to store timestamp as a Date object
-function submitQuantity() {
-    const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
-    const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
-
-    if (boxQuantity === 0 && pieceQuantity === 0) {
-        alert('请至少输入一个数量！');
-        return;
-    }
-
-    currentProduct.scanned = true;
-    
-    // Store timestamp as Date object
-    const timestamp = new Date();
-    
-    const record = {
-        timestamp: timestamp,
-        items: [{
-            name: currentProduct.name,
-            packaging: currentProduct.packaging,
-            boxQuantity: boxQuantity,
-            pieceQuantity: pieceQuantity,
-            timestamp: timestamp
-        }]
-    };
-
-    scanRecords.unshift(record);
-
-    renderRecords();
-    renderProducts();
-    updateProgress();
-    closeModal();
-}
