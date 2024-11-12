@@ -862,12 +862,21 @@ function renderRecords() {
         });
         div.innerHTML = recordsHtml;
         
+        // Make the div itself store the indices
+        div.dataset.record = record.items[0] ? recordIndex : '';
+        div.dataset.item = record.items[0] ? '0' : '';
+        
         // Add double-click handler to the entire group
-        div.addEventListener('dblclick', () => {
-            const recordItem = div.querySelector('.record-item');
-            const recordIndex = recordItem.dataset.record;
-            const itemIndex = recordItem.dataset.item;
-            editRecordGroup(div, recordIndex, itemIndex);
+        div.addEventListener('dblclick', (event) => {
+            // Prevent event from bubbling up
+            event.stopPropagation();
+            
+            const recordIndex = div.dataset.record;
+            const itemIndex = div.dataset.item;
+            
+            if (recordIndex !== '' && itemIndex !== '') {
+                editRecordGroup(div, parseInt(recordIndex), parseInt(itemIndex));
+            }
         });
         
         recordsList.appendChild(div);
@@ -875,6 +884,11 @@ function renderRecords() {
 }
 
 function editRecordGroup(groupElement, recordIndex, itemIndex) {
+    // Check if already editing
+    if (groupElement.classList.contains('editing')) {
+        return;
+    }
+    
     // Add editing class for visual feedback
     groupElement.classList.add('editing');
     
@@ -887,12 +901,14 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
     boxInput.type = 'number';
     boxInput.className = 'records-quantity-input';
     boxInput.value = record.boxQuantity;
+    boxInput.min = '0';
     
     // Create input for piece quantity
     const pieceInput = document.createElement('input');
     pieceInput.type = 'number';
     pieceInput.className = 'records-quantity-input';
     pieceInput.value = record.pieceQuantity;
+    pieceInput.min = '0';
     
     // Replace spans with inputs
     boxQuantitySpan.innerHTML = '';
@@ -904,6 +920,10 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
     boxInput.focus();
     
     function saveChanges() {
+        if (!groupElement.classList.contains('editing')) {
+            return; // Prevent double-saving
+        }
+        
         const newBoxQuantity = parseInt(boxInput.value) || record.boxQuantity;
         const newPieceQuantity = parseInt(pieceInput.value) || record.pieceQuantity;
         
@@ -917,6 +937,9 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
         
         // Remove editing class
         groupElement.classList.remove('editing');
+        
+        // Remove click outside listener
+        document.removeEventListener('click', handleClickOutside);
     }
     
     // Handle input events
@@ -942,7 +965,6 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
     function handleClickOutside(e) {
         if (!groupElement.contains(e.target)) {
             saveChanges();
-            document.removeEventListener('click', handleClickOutside);
         }
     }
     
