@@ -52,7 +52,7 @@ const products = [
     },
     {
         barcode: "50264",
-        name: "VEGETABLE FISH BALL",
+        name: "(泰)菜丸 VEGETABLE FISH BALL",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "VEGETABLE FISH BALL", packaging: "500g x 20pkt", itemCode: "50264" },
@@ -72,7 +72,7 @@ const products = [
     },
     {
         barcode: "50268",
-        name: "CARTOON FISH",
+        name: "可爱鱼 CARTOON FISH",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "CARTOON FISH", packaging: "500g x 20pkt", itemCode: "50268" },
@@ -82,7 +82,7 @@ const products = [
     },
     {
         barcode: "50270",
-        name: "FRUITY FISH CAKE",
+        name: "果香鱼饼 FRUITY FISH CAKE",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "FRUITY FISH CAKE", packaging: "500g x 20pkt", itemCode: "50270" },
