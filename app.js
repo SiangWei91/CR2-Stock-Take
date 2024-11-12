@@ -835,7 +835,6 @@ function updateProgress() {
 function renderRecords() {
     const recordsList = document.getElementById('recordsList');
     recordsList.innerHTML = '';
-
     scanRecords.forEach(record => {
         const div = document.createElement('div');
         div.className = 'record-group';
@@ -848,13 +847,47 @@ function renderRecords() {
                 <div class="record-item">
                     <h3>${item.name}</h3>
                     <p>${item.packaging}</p>
-                    <p>数量: ${item.boxQuantity}箱 | CTN ${item.pieceQuantity}包 | PKT</p>
+                    <div class="quantity-group">
+                        <div class="quantity-row" ondblclick="editQuantity(this, 'box', ${item.boxQuantity})">
+                            <span class="quantity-label">箱 | CTN:</span>
+                            <span class="quantity-value"><strong>${item.boxQuantity}</strong></span>
+                        </div>
+                        <div class="quantity-row" ondblclick="editQuantity(this, 'piece', ${item.pieceQuantity})">
+                            <span class="quantity-label">包 | PKT:</span>
+                            <span class="quantity-value"><strong>${item.pieceQuantity}</strong></span>
+                        </div>
+                    </div>
                 </div>
             `;
         });
-
         div.innerHTML = recordsHtml;
         recordsList.appendChild(div);
+    });
+}
+
+function editQuantity(element, type, currentValue) {
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.value = currentValue;
+    input.className = 'quantity-input';
+    
+    const valueSpan = element.querySelector('.quantity-value');
+    const originalContent = valueSpan.innerHTML;
+    valueSpan.innerHTML = '';
+    valueSpan.appendChild(input);
+    input.focus();
+
+    function saveChange() {
+        const newValue = input.value;
+        // Here you should add logic to update your data structure
+        valueSpan.innerHTML = `<strong>${newValue}</strong>`;
+    }
+
+    input.addEventListener('blur', saveChange);
+    input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            saveChange();
+        }
     });
 }
 // 显示指定页面
