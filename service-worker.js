@@ -4,7 +4,7 @@ const urlsToCache = [
     '/CR2-Stock-Take/index.html',
     '/CR2-Stock-Take/app.js',
     '/CR2-Stock-Take/manifest.json',
-    '/CR2-Stock-Take/icons/icon-192x192.png',
+    '/CR2-Stock-Take/icons/CR2icon-192x192.png',
     '/CR2-Stock-Take/icons/icon-512x512.png'
 ];
 
