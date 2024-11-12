@@ -942,7 +942,7 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            alert('数据提交成功！');
+            showCustomAlert('数据提交成功！');
             // Clear records after successful submission
             scanRecords = [];
             renderRecords();
@@ -951,7 +951,7 @@ async function submitToGoogleSheet() {
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('提交失败，请重试！');
+        showCustomAlert('提交失败，请重试！');
     } finally {
         // Hide loading overlay
         loadingOverlay.style.display = 'none';
@@ -963,7 +963,7 @@ function submitQuantity() {
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
     if (boxQuantity === 0 && pieceQuantity === 0) {
-        alert('请至少输入一个数量！');
+        showCustomAlert('请至少输入一个数量！');
         return;
     }
 
