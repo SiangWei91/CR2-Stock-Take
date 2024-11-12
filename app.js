@@ -893,14 +893,15 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        showCustomAlert('请选择盘点人员！| Please Choose Operator');
+        alert('请选择盘点人员！');
         return;
     }
     
     if (scanRecords.length === 0) {
-        showCustomAlert('没有可提交的记录！| No Data Submit');
+        alert('没有可提交的记录！');
         return;
     }
+
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
     loadingOverlay.style.display = 'block';
@@ -915,23 +916,14 @@ async function submitToGoogleSheet() {
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
-                // Format timestamp correctly
-                const timestamp = new Date(item.timestamp);
-                const date = timestamp.toLocaleDateString('en-US', { 
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit'
-                });
-                const time = timestamp.toLocaleTimeString('en-US', {
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit'
-                });
+                // Format timestamp to remove comma
+                const [datePart, timePart] = item.timestamp.split(',');
+                const cleanDate = datePart.trim();
+                const cleanTime = timePart.trim();
                 
                 return {
-                    date: date,
-                    time: time,
+                    date: cleanDate,
+                    time: cleanTime,
                     name: item.name,
                     packaging: item.packaging,
                     boxQuantity: item.boxQuantity,
@@ -950,43 +942,47 @@ async function submitToGoogleSheet() {
         });
 
         if (response.ok) {
-            showCustomAlert('数据提交成功！| Successful');
+            alert('数据提交成功！');
+            // Clear records after successful submission
             scanRecords = [];
             renderRecords();
         } else {
-            throw new Error('提交失败 | Fail');
+            throw new Error('提交失败');
         }
     } catch (error) {
         console.error('Error:', error);
-        showCustomAlert('提交失败，请重试！| Error Try Again');
+        alert('提交失败，请重试！');
     } finally {
+        // Hide loading overlay
         loadingOverlay.style.display = 'none';
     }
 }
 
-// And update the submitQuantity function to store timestamp as a Date object
+// Also update where you create the record to store date and time separately
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
 
     if (boxQuantity === 0 && pieceQuantity === 0) {
-        showCustomAlert('请至少输入一个数量！| Please at least fill some Quantity');
+        alert('请至少输入一个数量！');
         return;
     }
 
     currentProduct.scanned = true;
-    
-    // Store timestamp as Date object
-    const timestamp = new Date();
+
+    // Create clean timestamp without comma
+    const now = new Date();
+    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
+    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
     
     const record = {
-        timestamp: timestamp,
+        timestamp: `${date} ${time}`,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: timestamp
+            timestamp: `${date} ${time}`
         }]
     };
 
