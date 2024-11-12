@@ -62,7 +62,7 @@ const products = [
     },
     {
         barcode: "50266",
-        name: "PANDY FISH",
+        name: "熊猫鱼饼 PANDY FISH",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "熊猫鱼饼 PANDY FISH", packaging: "500g x 20pkt", itemCode: "50266" },
