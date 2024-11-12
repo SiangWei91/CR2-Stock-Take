@@ -2,7 +2,7 @@
 const products = [
     {
         barcode: "50272",
-        name: "企鹅 PENGUIN STYLE",
+        name: "PENGUIN STYLE",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "企鹅 PENGUIN STYLE", packaging: "500g x 20pkt", itemCode: "50272" },
