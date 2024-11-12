@@ -916,14 +916,12 @@ async function submitToGoogleSheet() {
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
-                // Format timestamp to remove comma
-                const [datePart, timePart] = item.timestamp.split(',');
-                const cleanDate = datePart.trim();
-                const cleanTime = timePart.trim();
+                // Simply split the existing timestamp string
+                const [date, time] = item.timestamp.split(' ');
                 
                 return {
-                    date: cleanDate,
-                    time: cleanTime,
+                    date: date,
+                    time: time,
                     name: item.name,
                     packaging: item.packaging,
                     boxQuantity: item.boxQuantity,
@@ -934,6 +932,8 @@ async function submitToGoogleSheet() {
                 };
             })
         );
+
+        console.log('Data being sent:', data); // Debug log
 
         // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
@@ -957,7 +957,6 @@ async function submitToGoogleSheet() {
         loadingOverlay.style.display = 'none';
     }
 }
-
 // Also update where you create the record to store date and time separately
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
