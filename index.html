@@ -150,28 +150,70 @@
             cursor: pointer;
         }
         .records-list {
-            margin-bottom: 60px;
-        }
-        .record-group {
-            background: white;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            border: 1px solid #ddd;
-        }
-        .record-time {
-            font-weight: bold;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 5px;
-        }
-        .record-item {
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
-        }
-        .record-item:last-child {
-            border-bottom: none;
-        }
+    margin-bottom: 60px;
+}
+
+.record-group {
+    background: white;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.record-group:hover {
+    background-color: #f8f8f8;
+}
+
+.record-time {
+    font-weight: bold;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 5px;
+}
+
+.record-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.record-item:last-child {
+    border-bottom: none;
+}
+
+.quantity-group {
+    margin-top: 8px;
+}
+
+.quantity-row {
+    display: flex;
+    align-items: center;
+    margin: 4px 0;
+}
+
+.quantity-label {
+    min-width: 80px;
+    color: #666;
+}
+
+.quantity-value {
+    margin-left: 8px;
+}
+
+.quantity-input {
+    width: 60px;
+    padding: 4px 6px;
+    border: 1px solid #4CAF50;
+    border-radius: 4px;
+    font-size: inherit;
+    margin-left: 4px;
+}
+
+.editing {
+    background-color: #f0f8ff;
+}
 .loading {
             display: none;
             position: fixed;
