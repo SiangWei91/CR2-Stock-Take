@@ -844,78 +844,112 @@ function renderRecords() {
         
         record.items.forEach((item, itemIndex) => {
             recordsHtml += `
-                <div class="record-item">
+                <div class="record-item" data-record="${recordIndex}" data-item="${itemIndex}">
                     <h3>${item.name}</h3>
                     <p>${item.packaging}</p>
                     <div class="quantity-group">
                         <div class="quantity-row">
                             <span class="quantity-label">箱 | CTN:</span>
-                            <span class="quantity-value" data-record="${recordIndex}" data-item="${itemIndex}" data-type="box" ondblclick="editQuantity(this, 'box', ${item.boxQuantity})">
-                                <strong>${item.boxQuantity}</strong>
-                            </span>
+                            <span class="quantity-value box-quantity"><strong>${item.boxQuantity}</strong></span>
                         </div>
                         <div class="quantity-row">
                             <span class="quantity-label">包 | PKT:</span>
-                            <span class="quantity-value" data-record="${recordIndex}" data-item="${itemIndex}" data-type="piece" ondblclick="editQuantity(this, 'piece', ${item.pieceQuantity})">
-                                <strong>${item.pieceQuantity}</strong>
-                            </span>
+                            <span class="quantity-value piece-quantity"><strong>${item.pieceQuantity}</strong></span>
                         </div>
                     </div>
                 </div>
             `;
         });
         div.innerHTML = recordsHtml;
+        
+        // Add double-click handler to the entire group
+        div.addEventListener('dblclick', () => {
+            const recordItem = div.querySelector('.record-item');
+            const recordIndex = recordItem.dataset.record;
+            const itemIndex = recordItem.dataset.item;
+            editRecordGroup(div, recordIndex, itemIndex);
+        });
+        
         recordsList.appendChild(div);
     });
 }
 
-function editQuantity(element, type, currentValue) {
-    // Prevent event from bubbling up
-    event.stopPropagation();
+function editRecordGroup(groupElement, recordIndex, itemIndex) {
+    // Add editing class for visual feedback
+    groupElement.classList.add('editing');
     
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.value = currentValue;
-    input.className = 'quantity-input';
+    const record = scanRecords[recordIndex].items[itemIndex];
+    const boxQuantitySpan = groupElement.querySelector('.box-quantity');
+    const pieceQuantitySpan = groupElement.querySelector('.piece-quantity');
     
-    // Store original content and data attributes
-    const recordIndex = element.dataset.record;
-    const itemIndex = element.dataset.item;
-    const quantityType = element.dataset.type;
-    const originalContent = element.innerHTML;
+    // Create input for box quantity
+    const boxInput = document.createElement('input');
+    boxInput.type = 'number';
+    boxInput.className = 'quantity-input';
+    boxInput.value = record.boxQuantity;
     
-    element.innerHTML = '';
-    element.appendChild(input);
-    input.focus();
-    input.select(); // Select all text when focused
-
-    function saveChange() {
-        const newValue = parseInt(input.value) || currentValue;
+    // Create input for piece quantity
+    const pieceInput = document.createElement('input');
+    pieceInput.type = 'number';
+    pieceInput.className = 'quantity-input';
+    pieceInput.value = record.pieceQuantity;
+    
+    // Replace spans with inputs
+    boxQuantitySpan.innerHTML = '';
+    boxQuantitySpan.appendChild(boxInput);
+    pieceQuantitySpan.innerHTML = '';
+    pieceQuantitySpan.appendChild(pieceInput);
+    
+    // Focus first input
+    boxInput.focus();
+    
+    function saveChanges() {
+        const newBoxQuantity = parseInt(boxInput.value) || record.boxQuantity;
+        const newPieceQuantity = parseInt(pieceInput.value) || record.pieceQuantity;
         
-        // Update the data structure
-        if (quantityType === 'box') {
-            scanRecords[recordIndex].items[itemIndex].boxQuantity = newValue;
-        } else {
-            scanRecords[recordIndex].items[itemIndex].pieceQuantity = newValue;
-        }
+        // Update data structure
+        scanRecords[recordIndex].items[itemIndex].boxQuantity = newBoxQuantity;
+        scanRecords[recordIndex].items[itemIndex].pieceQuantity = newPieceQuantity;
         
-        // Update the display
-        element.innerHTML = `<strong>${newValue}</strong>`;
+        // Update display
+        boxQuantitySpan.innerHTML = `<strong>${newBoxQuantity}</strong>`;
+        pieceQuantitySpan.innerHTML = `<strong>${newPieceQuantity}</strong>`;
+        
+        // Remove editing class
+        groupElement.classList.remove('editing');
     }
-
-    function cancelEdit() {
-        element.innerHTML = originalContent;
-    }
-
-    input.addEventListener('blur', saveChange);
-    input.addEventListener('keypress', (e) => {
+    
+    // Handle input events
+    boxInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-            saveChange();
-            input.blur();
-        } else if (e.key === 'Escape') {
-            cancelEdit();
+            pieceInput.focus();
         }
     });
+    
+    pieceInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            saveChanges();
+        }
+    });
+    
+    // Save on blur of last input
+    pieceInput.addEventListener('blur', () => {
+        // Small timeout to allow for double-click to work properly
+        setTimeout(saveChanges, 200);
+    });
+    
+    // Handle clicks outside
+    function handleClickOutside(e) {
+        if (!groupElement.contains(e.target)) {
+            saveChanges();
+            document.removeEventListener('click', handleClickOutside);
+        }
+    }
+    
+    // Add click outside listener after a small delay to prevent immediate triggering
+    setTimeout(() => {
+        document.addEventListener('click', handleClickOutside);
+    }, 100);
 }
 // 显示指定页面
 function showPage(pageName) {
