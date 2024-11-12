@@ -835,26 +835,30 @@ function updateProgress() {
 function renderRecords() {
     const recordsList = document.getElementById('recordsList');
     recordsList.innerHTML = '';
-    scanRecords.forEach(record => {
+    scanRecords.forEach((record, recordIndex) => {
         const div = document.createElement('div');
         div.className = 'record-group';
         
         const formattedTime = new Date(record.timestamp).toLocaleString();
         let recordsHtml = `<div class="record-time">${formattedTime}</div>`;
         
-        record.items.forEach(item => {
+        record.items.forEach((item, itemIndex) => {
             recordsHtml += `
                 <div class="record-item">
                     <h3>${item.name}</h3>
                     <p>${item.packaging}</p>
                     <div class="quantity-group">
-                        <div class="quantity-row" ondblclick="editQuantity(this, 'box', ${item.boxQuantity})">
+                        <div class="quantity-row">
                             <span class="quantity-label">箱 | CTN:</span>
-                            <span class="quantity-value"><strong>${item.boxQuantity}</strong></span>
+                            <span class="quantity-value" data-record="${recordIndex}" data-item="${itemIndex}" data-type="box" ondblclick="editQuantity(this, 'box', ${item.boxQuantity})">
+                                <strong>${item.boxQuantity}</strong>
+                            </span>
                         </div>
-                        <div class="quantity-row" ondblclick="editQuantity(this, 'piece', ${item.pieceQuantity})">
+                        <div class="quantity-row">
                             <span class="quantity-label">包 | PKT:</span>
-                            <span class="quantity-value"><strong>${item.pieceQuantity}</strong></span>
+                            <span class="quantity-value" data-record="${recordIndex}" data-item="${itemIndex}" data-type="piece" ondblclick="editQuantity(this, 'piece', ${item.pieceQuantity})">
+                                <strong>${item.pieceQuantity}</strong>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -866,27 +870,50 @@ function renderRecords() {
 }
 
 function editQuantity(element, type, currentValue) {
+    // Prevent event from bubbling up
+    event.stopPropagation();
+    
     const input = document.createElement('input');
     input.type = 'number';
     input.value = currentValue;
     input.className = 'quantity-input';
     
-    const valueSpan = element.querySelector('.quantity-value');
-    const originalContent = valueSpan.innerHTML;
-    valueSpan.innerHTML = '';
-    valueSpan.appendChild(input);
+    // Store original content and data attributes
+    const recordIndex = element.dataset.record;
+    const itemIndex = element.dataset.item;
+    const quantityType = element.dataset.type;
+    const originalContent = element.innerHTML;
+    
+    element.innerHTML = '';
+    element.appendChild(input);
     input.focus();
+    input.select(); // Select all text when focused
 
     function saveChange() {
-        const newValue = input.value;
-        // Here you should add logic to update your data structure
-        valueSpan.innerHTML = `<strong>${newValue}</strong>`;
+        const newValue = parseInt(input.value) || currentValue;
+        
+        // Update the data structure
+        if (quantityType === 'box') {
+            scanRecords[recordIndex].items[itemIndex].boxQuantity = newValue;
+        } else {
+            scanRecords[recordIndex].items[itemIndex].pieceQuantity = newValue;
+        }
+        
+        // Update the display
+        element.innerHTML = `<strong>${newValue}</strong>`;
+    }
+
+    function cancelEdit() {
+        element.innerHTML = originalContent;
     }
 
     input.addEventListener('blur', saveChange);
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             saveChange();
+            input.blur();
+        } else if (e.key === 'Escape') {
+            cancelEdit();
         }
     });
 }
