@@ -65,8 +65,8 @@ const products = [
         name: "PANDY FISH",
         packaging: "500g x 20pkt",
         skus: [
-            { type: "CTN", name: "PANDY FISH", packaging: "500g x 20pkt", itemCode: "50266" },
-            { type: "PKT", name: "PANDY FISH", packaging: "500g/pkt", itemCode: "50267" }
+            { type: "CTN", name: "熊猫鱼饼 PANDY FISH", packaging: "500g x 20pkt", itemCode: "50266" },
+            { type: "PKT", name: "熊猫鱼饼 PANDY FISH", packaging: "500g/pkt", itemCode: "50267" }
         ],
         scanned: false
     },
