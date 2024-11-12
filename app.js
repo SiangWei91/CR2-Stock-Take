@@ -998,15 +998,32 @@ function submitQuantity() {
     closeModal();
 }
 
- if ('serviceWorker' in navigator) {
+if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js')
                 .then(registration => {
-                    console.log('ServiceWorker registered:', registration);
+                    // Check for updates when page loads
+                    registration.update();
+                    
+                    // Reload the page when new content is available
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'activated') {
+                                window.location.reload();
+                            }
+                        });
+                    });
                 })
                 .catch(error => {
                     console.log('ServiceWorker registration failed:', error);
                 });
         });
 
-
+        // Also check for updates when page is refreshed/focused
+        window.addEventListener('focus', () => {
+            if (navigator.serviceWorker.controller) {
+                navigator.serviceWorker.controller.postMessage({ type: 'CHECK_UPDATES' });
+            }
+        });
+    }
