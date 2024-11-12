@@ -847,14 +847,14 @@ function renderRecords() {
                 <div class="record-item" data-record="${recordIndex}" data-item="${itemIndex}">
                     <h3>${item.name}</h3>
                     <p>${item.packaging}</p>
-                    <div class="quantity-group">
-                        <div class="quantity-row">
-                            <span class="quantity-label">箱 | CTN:</span>
-                            <span class="quantity-value box-quantity"><strong>${item.boxQuantity}</strong></span>
+                    <div class="records-quantity-group">
+                        <div class="records-quantity-row">
+                            <span class="records-quantity-label">箱 | CTN:</span>
+                            <span class="records-quantity-value box-quantity"><strong>${item.boxQuantity}</strong></span>
                         </div>
-                        <div class="quantity-row">
-                            <span class="quantity-label">包 | PKT:</span>
-                            <span class="quantity-value piece-quantity"><strong>${item.pieceQuantity}</strong></span>
+                        <div class="records-quantity-row">
+                            <span class="records-quantity-label">包 | PKT:</span>
+                            <span class="records-quantity-value piece-quantity"><strong>${item.pieceQuantity}</strong></span>
                         </div>
                     </div>
                 </div>
@@ -885,13 +885,13 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
     // Create input for box quantity
     const boxInput = document.createElement('input');
     boxInput.type = 'number';
-    boxInput.className = 'quantity-input';
+    boxInput.className = 'records-quantity-input';
     boxInput.value = record.boxQuantity;
     
     // Create input for piece quantity
     const pieceInput = document.createElement('input');
     pieceInput.type = 'number';
-    pieceInput.className = 'quantity-input';
+    pieceInput.className = 'records-quantity-input';
     pieceInput.value = record.pieceQuantity;
     
     // Replace spans with inputs
