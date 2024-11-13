@@ -1098,7 +1098,7 @@ function submitQuantity() {
     renderProducts();
     updateProgress();
     closeModal();
-}
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js').then(reg => {
     reg.update();
