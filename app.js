@@ -832,6 +832,16 @@ function updateProgress() {
 }
 
 // 渲染盘点记录
+function formatDateToDDMMYYYY(dateString) {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const time = date.toLocaleTimeString();
+    return `${day}/${month}/${year} ${time}`;
+}
+
+// Updated renderRecords function
 function renderRecords() {
     const recordsList = document.getElementById('recordsList');
     recordsList.innerHTML = '';
@@ -839,14 +849,15 @@ function renderRecords() {
         const div = document.createElement('div');
         div.className = 'record-group';
         
-        const formattedTime = new Date(record.timestamp).toLocaleString();
+        // Format the timestamp using the new utility function
+        const formattedTime = formatDateToDDMMYYYY(record.timestamp);
         let recordsHtml = `<div class="record-time">${formattedTime}</div>`;
         
         record.items.forEach((item, itemIndex) => {
             recordsHtml += `
                 <div class="record-item" data-record="${recordIndex}" data-item="${itemIndex}">
                     <h3>${item.name}</h3>
-<p>${item.packaging}</p>
+                    <p>${item.packaging}</p>
                     <div class="records-quantity-group">
                         <div class="records-quantity-row">
                             <span class="records-quantity-label">箱 | CTN:</span>
