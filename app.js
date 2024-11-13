@@ -1082,7 +1082,7 @@ async function submitToGoogleSheet() {
         loadingOverlay.style.display = 'none';
     }
 }
-
+// Also update where you create the record to store date and time separately
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
