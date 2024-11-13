@@ -1010,12 +1010,12 @@ document.getElementById('pieceQuantityInput').addEventListener('keypress', funct
 
 async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
-    
+
     if (!counter) {
         showCustomAlert('请选择盘点人员！');
         return;
     }
-    
+
     if (scanRecords.length === 0) {
         showCustomAlert('没有可提交的记录！');
         return;
@@ -1023,18 +1023,7 @@ async function submitToGoogleSheet() {
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
     loadingOverlay.style.display = 'block';
-
     try {
-        // Function to convert date from MM/DD/YYYY to DD/MM/YYYY
-        function convertDateFormat(dateStr) {
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                // Rearrange from MM/DD/YYYY to DD/MM/YYYY
-                return `${parts[1]}/${parts[0]}/${parts[2]}`;
-            }
-            return dateStr; // Return original if not in expected format
-        }
-
         // Process all records in a single batch
         const data = scanRecords.flatMap(record => 
             record.items.map(item => {
@@ -1043,11 +1032,11 @@ async function submitToGoogleSheet() {
                 // Get CTN and PKT item codes from skus
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
-                
+
                 const [date, time] = item.timestamp.split(' ');
-                
+
                 return {
-                    date: convertDateFormat(date), // Convert date format here
+                    date: date,
                     time: time,
                     name: item.name,
                     packaging: item.packaging,
@@ -1059,13 +1048,11 @@ async function submitToGoogleSheet() {
                 };
             })
         );
-
         // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
         });
-
         if (response.ok) {
             showCustomAlert('数据提交成功！');
             // Clear records after successful submission
