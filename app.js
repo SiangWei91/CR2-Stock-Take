@@ -940,6 +940,9 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
         
         // Remove click outside listener
         document.removeEventListener('click', handleClickOutside);
+        
+        // Show success message for local update
+        showCustomAlert('记录已更新！');
     }
     
     // Handle input events
@@ -1009,12 +1012,12 @@ async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
     
     if (!counter) {
-        alert('请选择盘点人员！');
+        showCustomAlert('请选择盘点人员！');
         return;
     }
     
     if (scanRecords.length === 0) {
-        alert('没有可提交的记录！');
+        showCustomAlert('没有可提交的记录！');
         return;
     }
 
@@ -1032,7 +1035,6 @@ async function submitToGoogleSheet() {
                 const ctnSku = product.skus.find(sku => sku.type === "CTN");
                 const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
-                // Simply split the existing timestamp string
                 const [date, time] = item.timestamp.split(' ');
                 
                 return {
@@ -1048,8 +1050,6 @@ async function submitToGoogleSheet() {
                 };
             })
         );
-
-        console.log('Data being sent:', data); // Debug log
 
         // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
