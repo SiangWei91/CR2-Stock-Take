@@ -1073,32 +1073,36 @@ async function submitToGoogleSheet() {
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
+    
     if (boxQuantity === 0 && pieceQuantity === 0) {
         showCustomAlert('请至少输入一个数量！');
         return;
     }
+    
     currentProduct.scanned = true;
+    
     // Create clean timestamp without comma
     const now = new Date();
     const date = now.toLocaleDateString(); // e.g., "11/11/2024"
     const time = now.toLocaleTimeString(); // e.g., "14:30:45"
 
     const record = {
-        timestamp: ${date} ${time},
+        timestamp: `${date} ${time}`,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: ${date} ${time}
+            timestamp: `${date} ${time}`
         }]
     };
+    
     scanRecords.unshift(record);
     renderRecords();
     renderProducts();
     updateProgress();
     closeModal();
-
+}
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js').then(reg => {
     reg.update();
