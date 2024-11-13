@@ -1020,11 +1020,9 @@ async function submitToGoogleSheet() {
         showCustomAlert('没有可提交的记录！');
         return;
     }
-
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
     loadingOverlay.style.display = 'block';
-
     try {
         // Process all records in a single batch
         const data = scanRecords.flatMap(record => 
@@ -1050,13 +1048,11 @@ async function submitToGoogleSheet() {
                 };
             })
         );
-
         // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
         });
-
         if (response.ok) {
             showCustomAlert('数据提交成功！');
             // Clear records after successful submission
@@ -1073,22 +1069,33 @@ async function submitToGoogleSheet() {
         loadingOverlay.style.display = 'none';
     }
 }
-// Also update where you create the record to store date and time separately
+
+// Function to format date as DD/MM/YYYY
+function formatDate(date) {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+}
+
+// Function to format time as HH:mm:ss
+function formatTime(date) {
+    return date.toTimeString().split(' ')[0];
+}
+
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
-
     if (boxQuantity === 0 && pieceQuantity === 0) {
         showCustomAlert('请至少输入一个数量！');
         return;
     }
-
     currentProduct.scanned = true;
-
-    // Create clean timestamp without comma
+    
+    // Create formatted date and time
     const now = new Date();
-    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
-    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
+    const date = formatDate(now);  // Will return DD/MM/YYYY
+    const time = formatTime(now);  // Will return HH:mm:ss
     
     const record = {
         timestamp: `${date} ${time}`,
@@ -1100,9 +1107,7 @@ function submitQuantity() {
             timestamp: `${date} ${time}`
         }]
     };
-
     scanRecords.unshift(record);
-
     renderRecords();
     renderProducts();
     updateProgress();
