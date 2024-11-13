@@ -845,8 +845,8 @@ function renderRecords() {
         record.items.forEach((item, itemIndex) => {
             recordsHtml += `
                 <div class="record-item" data-record="${recordIndex}" data-item="${itemIndex}">
-                    <h3>${item.name}</h3>
-                    <p>${item.packaging}</p>
+                    <h3 style="margin-top: 5px; margin-bottom: 5px;">${item.name}</h3>
+<p>${item.packaging}</p>
                     <div class="records-quantity-group">
                         <div class="records-quantity-row">
                             <span class="records-quantity-label">箱 | CTN:</span>
