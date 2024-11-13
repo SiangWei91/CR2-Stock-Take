@@ -1023,7 +1023,18 @@ async function submitToGoogleSheet() {
     // Show loading overlay
     const loadingOverlay = document.getElementById('loadingOverlay');
     loadingOverlay.style.display = 'block';
+
     try {
+        // Function to convert date from MM/DD/YYYY to DD/MM/YYYY
+        function convertDateFormat(dateStr) {
+            const parts = dateStr.split('/');
+            if (parts.length === 3) {
+                // Rearrange from MM/DD/YYYY to DD/MM/YYYY
+                return `${parts[1]}/${parts[0]}/${parts[2]}`;
+            }
+            return dateStr; // Return original if not in expected format
+        }
+
         // Process all records in a single batch
         const data = scanRecords.flatMap(record => 
             record.items.map(item => {
@@ -1036,7 +1047,7 @@ async function submitToGoogleSheet() {
                 const [date, time] = item.timestamp.split(' ');
                 
                 return {
-                    date: date,
+                    date: convertDateFormat(date), // Convert date format here
                     time: time,
                     name: item.name,
                     packaging: item.packaging,
@@ -1048,11 +1059,13 @@ async function submitToGoogleSheet() {
                 };
             })
         );
+
         // Single API call with all data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
         });
+
         if (response.ok) {
             showCustomAlert('数据提交成功！');
             // Clear records after successful submission
@@ -1070,19 +1083,6 @@ async function submitToGoogleSheet() {
     }
 }
 
-// Function to format date as DD/MM/YYYY
-function formatDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-}
-
-// Function to format time as HH:mm:ss
-function formatTime(date) {
-    return date.toTimeString().split(' ')[0];
-}
-
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
@@ -1091,20 +1091,19 @@ function submitQuantity() {
         return;
     }
     currentProduct.scanned = true;
-    
-    // Create formatted date and time
+    // Create clean timestamp without comma
     const now = new Date();
-    const date = formatDate(now);  // Will return DD/MM/YYYY
-    const time = formatTime(now);  // Will return HH:mm:ss
-    
+    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
+    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
+
     const record = {
-        timestamp: `${date} ${time}`,
+        timestamp: ${date} ${time},
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: `${date} ${time}`
+            timestamp: ${date} ${time}
         }]
     };
     scanRecords.unshift(record);
@@ -1113,7 +1112,6 @@ function submitQuantity() {
     updateProgress();
     closeModal();
 }
-
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js').then(reg => {
     reg.update();
