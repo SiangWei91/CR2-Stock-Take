@@ -837,9 +837,16 @@ function formatDateToDDMMYYYY(dateString) {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-    const time = date.toLocaleTimeString();
+    // Use hour24 option to ensure 24-hour format
+    const time = date.toLocaleTimeString('en-GB', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
     return `${day}/${month}/${year} ${time}`;
 }
+
 
 // Updated renderRecords function
 function renderRecords() {
@@ -1105,10 +1112,15 @@ function submitQuantity() {
     
     currentProduct.scanned = true;
     
-    // Create clean timestamp without comma
+    // Create timestamp in 24-hour format
     const now = new Date();
     const date = now.toLocaleDateString(); // e.g., "11/11/2024"
-    const time = now.toLocaleTimeString(); // e.g., "14:30:45"
+    const time = now.toLocaleTimeString('en-GB', { 
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
 
     const record = {
         timestamp: `${date} ${time}`,
