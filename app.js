@@ -783,37 +783,59 @@ function showQuantityModal(product) {
     document.getElementById('modalProductName').textContent = product.name;
     document.getElementById('modalPackaging').textContent = product.packaging;
     
-    // Check if product has box quantity
-    const hasBoxQuantity = product.skus.some(sku => sku.type === "CTN");
+    // Check product SKU types
+    const hasCTN = product.skus.some(sku => sku.type === "CTN");
+    const hasPKT = product.skus.some(sku => sku.type === "PKT");
     
     const boxQuantityInput = document.getElementById('boxQuantityInput');
     const boxQuantityLabel = boxQuantityInput.previousElementSibling;
+    const pieceQuantityInput = document.getElementById('pieceQuantityInput');
+    const pieceQuantityLabel = pieceQuantityInput.previousElementSibling;
     
-    if (!hasBoxQuantity) {
-        boxQuantityInput.style.display = 'none';
-        boxQuantityLabel.style.display = 'none';
-    } else {
+    // Show/hide inputs based on SKU types
+    if (hasCTN && !hasPKT) {
+        // Only show CTN input
         boxQuantityInput.style.display = 'block';
         boxQuantityLabel.style.display = 'block';
+        pieceQuantityInput.style.display = 'none';
+        pieceQuantityLabel.style.display = 'none';
+    } else if (!hasCTN && hasPKT) {
+        // Only show PKT input
+        boxQuantityInput.style.display = 'none';
+        boxQuantityLabel.style.display = 'none';
+        pieceQuantityInput.style.display = 'block';
+        pieceQuantityLabel.style.display = 'block';
+    } else if (hasCTN && hasPKT) {
+        // Show both inputs
+        boxQuantityInput.style.display = 'block';
+        boxQuantityLabel.style.display = 'block';
+        pieceQuantityInput.style.display = 'block';
+        pieceQuantityLabel.style.display = 'block';
     }
     
-    document.getElementById('boxQuantityInput').value = '';
-    document.getElementById('pieceQuantityInput').value = '';
+    // Clear inputs
+    boxQuantityInput.value = '';
+    pieceQuantityInput.value = '';
+    
+    // Show modal
     document.getElementById('quantityModal').style.display = 'block';
     
-    // Focus on appropriate input based on product type
-    if (hasBoxQuantity) {
-        document.getElementById('boxQuantityInput').focus();
-    } else {
-        document.getElementById('pieceQuantityInput').focus();
-    }
+    // Set focus after a short delay to ensure the modal is fully displayed
+    setTimeout(() => {
+        if (hasCTN && !hasPKT) {
+            boxQuantityInput.focus();
+        } else if (!hasCTN && hasPKT) {
+            pieceQuantityInput.focus();
+        } else if (hasCTN && hasPKT) {
+            boxQuantityInput.focus();
+        }
+    }, 100); // Small delay to ensure modal is rendered
 }
-// 关闭模态框
+
 function closeModal() {
     document.getElementById('quantityModal').style.display = 'none';
     document.getElementById('barcodeInput').focus();
 }
-
 
 
 // 检查两个时间戳是否在同一分钟内
@@ -833,20 +855,41 @@ function updateProgress() {
 
 // 渲染盘点记录
 function formatDateToDDMMYYYY(dateString) {
+    // First, split the dateString into date and time parts
+    const [datePart, timePart] = dateString.split(' ');
+    
+    // If the date is already in DD/MM/YYYY format, return as is
+    if (datePart.match(/^\d{2}\/\d{2}\/\d{4}$/)) {
+        return dateString;
+    }
+    
+    // Otherwise, parse the date and convert
     const date = new Date(dateString);
+    
+    // Check if date is valid
+    if (isNaN(date.getTime())) {
+        console.error('Invalid date:', dateString);
+        return 'Invalid Date';
+    }
+    
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-    // Use hour24 option to ensure 24-hour format
-    const time = date.toLocaleTimeString('en-GB', { 
+    const time = timePart || date.toLocaleTimeString('en-GB', { 
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit'
     });
+    
     return `${day}/${month}/${year} ${time}`;
 }
 
+// Convert date format for Google Sheets submission
+function convertDateFormat(dateStr) {
+    // Already in DD/MM/YYYY format, return as is
+    return dateStr;
+}
 
 // Updated renderRecords function
 function renderRecords() {
@@ -1026,9 +1069,28 @@ document.getElementById('pieceQuantityInput').addEventListener('keypress', funct
     }
 });
 
+function checkInternetConnection() {
+    return navigator.onLine;
+}
+
+// Function to save data to session storage
+function saveToSessionStorage(data) {
+    const existingData = JSON.parse(sessionStorage.getItem('pendingSubmissions') || '[]');
+    existingData.push(data);
+    sessionStorage.setItem('pendingSubmissions', JSON.stringify(existingData));
+}
+
+// Function to get and clear pending submissions
+function getPendingSubmissions() {
+    const pending = sessionStorage.getItem('pendingSubmissions');
+    sessionStorage.removeItem('pendingSubmissions');
+    return pending ? JSON.parse(pending) : [];
+}
+
+// Modified submit function with offline support
 async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
-    const LOCATION = 'CR2';  // Hardcoded location for this page
+    const LOCATION = 'CR1';
     
     if (!counter) {
         showCustomAlert('请选择盘点人员！');
@@ -1044,12 +1106,15 @@ async function submitToGoogleSheet() {
     loadingOverlay.style.display = 'block';
 
     try {
-        function convertDateFormat(dateStr) {
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                return `${parts[1]}/${parts[0]}/${parts[2]}`;
-            }
-            return dateStr;
+        function formatDateForGoogleSheets(dateStr) {
+            // Extract date part (before the space)
+            const [datePart, timePart] = dateStr.split(' ');
+            
+            // Split the date into components
+            const [day, month, year] = datePart.split('/');
+            
+            // Format as DD/MM/YYYY explicitly
+            return `${day}/${month}/${year}`;
         }
 
         const data = scanRecords.flatMap(record => 
@@ -1061,8 +1126,8 @@ async function submitToGoogleSheet() {
                 const [date, time] = item.timestamp.split(' ');
                 
                 return {
-                    sheetName: LOCATION,  // Add the hardcoded location
-                    date: convertDateFormat(date),
+                    sheetName: LOCATION,
+                     date: formatDateForGoogleSheets(item.timestamp),  // Use new format function
                     time: time,
                     name: item.name,
                     packaging: item.packaging,
@@ -1075,6 +1140,28 @@ async function submitToGoogleSheet() {
             })
         );
 
+        // Check internet connection
+        if (!checkInternetConnection()) {
+            saveToSessionStorage(data);
+            showCustomAlert('无网络连接。数据已保存，将在有网络时自动提交。');
+            return;
+        }
+
+        // Try to submit any pending data first
+        const pendingSubmissions = getPendingSubmissions();
+        if (pendingSubmissions.length > 0) {
+            for (const pendingData of pendingSubmissions) {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
+                    method: 'POST',
+                    body: JSON.stringify(pendingData)
+                });
+                if (!response.ok) {
+                    throw new Error('提交历史数据失败');
+                }
+            }
+        }
+
+        // Submit current data
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
@@ -1089,44 +1176,63 @@ async function submitToGoogleSheet() {
         }
     } catch (error) {
         console.error('Error:', error);
-        showCustomAlert('提交失败，请重试！');
+        saveToSessionStorage(data);
+        showCustomAlert('提交失败，数据已保存，将在下次提交时重试！');
     } finally {
         loadingOverlay.style.display = 'none';
     }
 }
+
+// Add event listeners for online/offline status
+window.addEventListener('online', async () => {
+    const pendingSubmissions = getPendingSubmissions();
+    if (pendingSubmissions.length > 0) {
+        showCustomAlert('检测到网络连接，正在提交保存的数据...');
+        await submitToGoogleSheet();
+    }
+});
+
+window.addEventListener('offline', () => {
+    showCustomAlert('网络连接已断开。数据将保存在本地。');
+});
 // Also update where you create the record to store date and time separately
 function submitQuantity() {
     const boxQuantity = parseInt(document.getElementById('boxQuantityInput').value) || 0;
     const pieceQuantity = parseInt(document.getElementById('pieceQuantityInput').value) || 0;
-    
+
     if (boxQuantity === 0 && pieceQuantity === 0) {
         showCustomAlert('请至少输入一个数量！');
         return;
     }
-    
+
     currentProduct.scanned = true;
-    
-    // Create timestamp in 24-hour format
+
+    // Create timestamp with correct format
     const now = new Date();
-    const date = now.toLocaleDateString(); // e.g., "11/11/2024"
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const year = now.getFullYear();
     const time = now.toLocaleTimeString('en-GB', { 
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit'
     });
+    
+    const formattedDate = `${day}/${month}/${year}`;
+    const timestamp = `${formattedDate} ${time}`;
 
     const record = {
-        timestamp: `${date} ${time}`,
+        timestamp: timestamp,
         items: [{
             name: currentProduct.name,
             packaging: currentProduct.packaging,
             boxQuantity: boxQuantity,
             pieceQuantity: pieceQuantity,
-            timestamp: `${date} ${time}`
+            timestamp: timestamp
         }]
     };
-    
+
     scanRecords.unshift(record);
     renderRecords();
     renderProducts();
@@ -1134,11 +1240,10 @@ function submitQuantity() {
     closeModal();
 }
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js').then(reg => {
+  navigator.serviceWorker.register('/CR1-Stock-Take/service-worker.js').then(reg => {
     reg.update();
   });
 }
-
 function checkForUpdates() {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.getRegistration().then(reg => {
