@@ -1090,7 +1090,7 @@ function getPendingSubmissions() {
 // Modified submit function with offline support
 async function submitToGoogleSheet() {
     const counter = document.getElementById('counterSelect').value;
-    const LOCATION = 'CR1';
+    const LOCATION = 'CR2';
     
     if (!counter) {
         showCustomAlert('请选择盘点人员！');
@@ -1240,7 +1240,7 @@ function submitQuantity() {
     closeModal();
 }
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/CR1-Stock-Take/service-worker.js').then(reg => {
+  navigator.serviceWorker.register('/CR2-Stock-Take/service-worker.js').then(reg => {
     reg.update();
   });
 }
