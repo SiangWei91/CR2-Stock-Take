@@ -1,4 +1,4 @@
-const CACHE_NAME = 'CR2-Stock-Take-cache-v1.4';
+const CACHE_NAME = 'CR2-Stock-Take-cache-v1.5';
 const urlsToCache = [
     '/CR2-Stock-Take/',
     '/CR2-Stock-Take/index.html',
@@ -20,8 +20,15 @@ self.addEventListener('install', function(event) {
 
 self.addEventListener('fetch', function(event) {
   event.respondWith(
-    fetch(event.request).catch(function() {
-      return caches.match(event.request);
+    caches.open(CACHE_NAME).then(function(cache) {
+      return cache.match(event.request).then(function(response) {
+        return response || fetch(event.request).then(function(networkResponse) {
+          // Clone response before caching
+          const responseToCache = networkResponse.clone();
+          cache.put(event.request, responseToCache);
+          return networkResponse;
+        });
+      });
     })
   );
 });
