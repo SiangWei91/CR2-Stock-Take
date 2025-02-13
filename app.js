@@ -11,26 +11,6 @@ const products = [
         scanned: false
     },
     {
-        barcode: "50284",
-        name: "竹蟹棒 CRAB FLAVOURED STICK FISH ROLL",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "竹蟹棒 CRAB FLAVOURED STICK FISH ROLL", packaging: "500g x 20pkt", itemCode: "50284" },
-            { type: "PKT", name: "竹蟹棒  CRAB FLAVOURED STICK FISH ROLL", packaging: "500g/pkt", itemCode: "50285" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50282",
-        name: "棒棒卷 KANI MAKI",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "棒棒卷 KANI MAKI", packaging: "500g x 20pkt", itemCode: "50282" },
-            { type: "PKT", name: "棒棒卷 KANI MAKI", packaging: "500g/pkt", itemCode: "50283" }
-        ],
-        scanned: false
-    },
-    {
         barcode: "50278",
         name: "卡通鱼饼 ZUZU FISH CAKE",
         packaging: "500g x 20pkt",
@@ -47,16 +27,6 @@ const products = [
         skus: [
             { type: "CTN", name: "彩虹鱼饼 FISH CAKE", packaging: "500g x 20pkt", itemCode: "40648" },
             { type: "PKT", name: "彩虹鱼饼 FISH CAKE", packaging: "500g/pkt", itemCode: "40649" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50264",
-        name: "(泰)菜丸 VEGETABLE FISH BALL",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "VEGETABLE FISH BALL", packaging: "500g x 20pkt", itemCode: "50264" },
-            { type: "PKT", name: "VEGETABLE FISH BALL", packaging: "500g/pkt", itemCode: "50265" }
         ],
         scanned: false
     },
@@ -87,16 +57,6 @@ const products = [
         skus: [
             { type: "CTN", name: "FRUITY FISH CAKE", packaging: "500g x 20pkt", itemCode: "50270" },
             { type: "PKT", name: "FRUITY FISH CAKE", packaging: "500g/pkt", itemCode: "50271" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50200",
-        name: "虾蕾 SHRIMP BOMB",
-        packaging: "250g x 40pkt",
-        skus: [
-            { type: "CTN", name: "虾蕾 SHRIMP BOMB", packaging: "250g x 40pkt", itemCode: "50200" },
-            { type: "PKT", name: "虾蕾 SHRIMP BOMB", packaging: "250g/pkt", itemCode: "50201" }
         ],
         scanned: false
     },
@@ -341,16 +301,6 @@ const products = [
         skus: [
             { type: "CTN", name: "芝士丸 Melted Cheese Meat BALL", packaging: "500g x 20pkt", itemCode: "40634" },
             { type: "PKT", name: "芝士丸 Melted Cheese Meat BALL", packaging: "500g/pkt", itemCode: "40635" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "40636",
-        name: "芝士丸 MELTED CHEESE BALL",
-        packaging: "1kg x 10pkt",
-        skus: [
-            { type: "CTN", name: "芝士丸 MELTED CHEESE BALL", packaging: "1kg x 10pkt", itemCode: "40636" },
-            { type: "PKT", name: "芝士丸 MELTED CHEESE BALL", packaging: "1kg/pkt", itemCode: "40637" }
         ],
         scanned: false
     },
