@@ -523,6 +523,26 @@ const products = [
             { type: "PKT", name: "(菜) 海鲜豆腐 SEAFOOD TOFU WITH VEGETABLE", packaging: "1kg/pkt", itemCode: "28035" }
         ],
         scanned: false
+    },
+{
+        barcode: "26114",
+        name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL",
+        packaging: "250g x 40pkt",
+        skus: [
+            { type: "CTN", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g x 40pkt", itemCode: "40114" },
+            { type: "PKT", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g/pkt", itemCode: "40115" }
+        ],
+        scanned: false
+    },
+{
+        barcode: "26112",
+        name: "皇帝蟹粒 FLAVOURED KING CRAB BITE",
+        packaging: "250g x 40pkt",
+        skus: [
+            { type: "CTN", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g x 40pkt", itemCode: "26112" },
+            { type: "PKT", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g/pkt", itemCode: "26113" }
+        ],
+        scanned: false
     }
 ];
 let currentProduct = null;
