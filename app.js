@@ -529,8 +529,8 @@ const products = [
         name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL",
         packaging: "250g x 40pkt",
         skus: [
-            { type: "CTN", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g x 40pkt", itemCode: "40114" },
-            { type: "PKT", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g/pkt", itemCode: "40115" }
+            { type: "CTN", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g x 40pkt", itemCode: "26114" },
+            { type: "PKT", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g/pkt", itemCode: "26115" }
         ],
         scanned: false
     },
