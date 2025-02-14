@@ -366,7 +366,7 @@ const products = [
     },
     {
         barcode: "26010",
-        name: "蟹丸 FLAVOURED CRAB BALL",
+        name: "蟹丸 FLAVOURED CRAB BALL 250g",
         packaging: "250g x 40pkt",
         skus: [
             { type: "CTN", name: "蟹丸 FLAVOURED CRAB BALL", packaging: "250g x 40pkt", itemCode: "26010" },
@@ -376,7 +376,7 @@ const products = [
     },
     {
         barcode: "26110",
-        name: "皇帝蟹丸 FLAVOURED KING CRAB BALL",
+        name: "皇帝蟹丸 FLAVOURED KING CRAB BALL 250g",
         packaging: "250g x 40pkt",
         skus: [
             { type: "CTN", name: "皇帝蟹丸 FLAVOURED KING CRAB BALL", packaging: "250g x 40pkt", itemCode: "26110" },
@@ -456,7 +456,7 @@ const products = [
     },
     {
         barcode: "28010",
-        name: "鱼豆腐 FISH TOFU",
+        name: "鱼豆腐 FISH TOFU 250g",
         packaging: "250g x 40pkt",
         skus: [
             { type: "CTN", name: "鱼豆腐 FISH TOFU", packaging: "250g x 40pkt", itemCode: "28010" },
@@ -476,7 +476,7 @@ const products = [
     },
     {
         barcode: "40668",
-        name: "海鲜粒 SEAFOOD BALL",
+        name: "海鲜粒 SEAFOOD BALL 500g",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "海鲜粒 SEAFOOD BALL", packaging: "500g x 20pkt", itemCode: "40668" },
