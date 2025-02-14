@@ -394,13 +394,23 @@ const products = [
         ],
         scanned: false
     },
+ {
+        barcode: "90003.1",
+        name: "NTUC鱼丸 28G NTUC FISH BALL 28G",
+        packaging: "1kg x 10pkt",
+        skus: [
+            { type: "CTN", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg x 10pkt", itemCode: "90003.1" },
+            { type: "PKT", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg", itemCode: "NA3" }
+        ],
+        scanned: false
+    },
     {
         barcode: "40310",
         name: "中鱼丸 COOKED FISH BALL (M)",
         packaging: "1kg x 10pkt",
         skus: [
             { type: "CTN", name: "中鱼丸 COOKED FISH BALL (M)", packaging: "1kg x 10pkt", itemCode: "40310" },
-            { type: "PKT", name: "Fish Ball M", packaging: "1kg", itemCode: "NA3" }
+            { type: "PKT", name: "中鱼丸 Fish Ball M", packaging: "1kg", itemCode: "NA3" }
         ],
         scanned: false
     },
