@@ -400,7 +400,7 @@ const products = [
         packaging: "1kg x 10pkt",
         skus: [
             { type: "CTN", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg x 10pkt", itemCode: "90003.1" },
-            { type: "PKT", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg", itemCode: "NA3" }
+            { type: "PKT", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg", itemCode: "NA2" }
         ],
         scanned: false
     },
