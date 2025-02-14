@@ -196,7 +196,7 @@ const products = [
     },
     {
         barcode: "10900",
-        name: "苏东丸 CUTTLEFISH BALL",
+        name: "苏东丸 CUTTLEFISH BALL 500g",
         packaging: "500g x 20pkt",
         skus: [
             { type: "CTN", name: "苏东丸 CUTTLEFISH BALL", packaging: "500g x 20pkt", itemCode: "10900" },
