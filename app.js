@@ -395,16 +395,6 @@ const products = [
         scanned: false
     },
     {
-        barcode: "40300",
-        name: "大鱼丸 COOKED FISH BALL",
-        packaging: "1kg x 10pkt",
-        skus: [
-            { type: "CTN", name: "大鱼丸 COOKED FISH BALL", packaging: "1kg x 10pkt", itemCode: "40300" },
-            { type: "PKT", name: "Fish Ball L", packaging: "1kg", itemCode: "NA2" }
-        ],
-        scanned: false
-    },
-    {
         barcode: "40310",
         name: "中鱼丸 COOKED FISH BALL (M)",
         packaging: "1kg x 10pkt",
