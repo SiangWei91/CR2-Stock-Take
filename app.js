@@ -81,7 +81,7 @@ const products = [
         scanned: false
     },
     {
-        barcode: "10903",
+        barcode: "NA1",
         name: "苏东丸 CUTTLEFISH BALL",
         packaging: "1kg x 10pkt",
         skus: [
@@ -729,7 +729,7 @@ function setupBarcodeInput() {
         const barcode = e.target.value.trim();
         
         // If the barcode is long enough (you can adjust this length)
-        if (barcode.length >= 5) {  // Assuming minimum barcode length is 5
+        if (barcode.length >= 3) {  // Assuming minimum barcode length is 5
             // Set a small timeout to allow for complete barcode scan
             searchTimeout = setTimeout(() => {
                 searchProduct();
