@@ -1,26 +1,6 @@
 // 示例产品数据
 const products = [
     {
-        barcode: "50272",
-        name: "企鹅 PENGUIN STYLE",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "企鹅 PENGUIN STYLE", packaging: "500g x 20pkt", itemCode: "50272" },
-            { type: "PKT", name: "企鹅 PENGUIN STYLE", packaging: "500g/pkt", itemCode: "50273" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50278",
-        name: "卡通鱼饼 ZUZU FISH CAKE",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "卡通鱼饼 ZUZU FISH CAKE", packaging: "500g x 20pkt", itemCode: "50278" },
-            { type: "PKT", name: "卡通鱼饼 ZUZU FISH CAKE", packaging: "500g/pkt", itemCode: "50279" }
-        ],
-        scanned: false
-    },
-    {
         barcode: "40648",
         name: "彩虹鱼饼 FISH CAKE",
         packaging: "500g x 20pkt",
