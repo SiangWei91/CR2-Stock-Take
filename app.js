@@ -536,6 +536,88 @@ window.onload = function() {
     document.getElementById('barcodeInput').focus();
 }
 
+function createCustomAlert() {
+    // Create the styles
+    const style = document.createElement('style');
+    style.textContent = `
+        .custom-alert {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 3000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .custom-alert-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 300px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+        }
+
+        .alert-button {
+            margin-top: 15px;
+            padding: 8px 20px;
+            background: #64748b;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Create the alert elements
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'custom-alert';
+    alertDiv.id = 'customAlert';
+    
+    alertDiv.innerHTML = `
+        <div class="custom-alert-content">
+            <p id="alertMessage"></p>
+            <button onclick="closeCustomAlert()" class="alert-button">确定</button>
+        </div>
+    `;
+
+    // Add click handler for closing when clicking outside
+    alertDiv.addEventListener('click', function(e) {
+        if (e.target === alertDiv) {
+            closeCustomAlert();
+        }
+    });
+
+    document.body.appendChild(alertDiv);
+}
+
+// Function to show custom alert
 function showCustomAlert(message) {
     // Create alert elements if they don't exist
     if (!document.getElementById('customAlert')) {
@@ -564,6 +646,7 @@ function closeCustomAlert() {
         }
     }
 }
+
 
 // 渲染产品列表
 function renderProducts() {
@@ -853,8 +936,8 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
             return; // Prevent double-saving
         }
         
-        const newBoxQuantity = parseInt(boxInput.value) || record.boxQuantity;
-        const newPieceQuantity = parseInt(pieceInput.value) || record.pieceQuantity;
+        const newBoxQuantity = boxInput.value !== '' ? parseInt(boxInput.value) : 0;
+        const newPieceQuantity = pieceInput.value !== '' ? parseInt(pieceInput.value) : 0;
         
         // Update data structure
         scanRecords[recordIndex].items[itemIndex].boxQuantity = newBoxQuantity;
@@ -871,7 +954,7 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
         document.removeEventListener('click', handleClickOutside);
         
         // Show success message for local update
-        showCustomAlert('记录已更新！');
+        showCustomAlert('记录已更新！Record Updated!');
     }
     
     // Handle input events
