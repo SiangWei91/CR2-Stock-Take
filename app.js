@@ -894,6 +894,8 @@ function renderRecords() {
     });
 }
 
+Updated Record Editing Function
+
 function editRecordGroup(groupElement, recordIndex, itemIndex) {
     // Check if already editing
     if (groupElement.classList.contains('editing')) {
@@ -935,8 +937,9 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
             return; // Prevent double-saving
         }
         
-        const newBoxQuantity = parseInt(boxInput.value) || record.boxQuantity;
-        const newPieceQuantity = parseInt(pieceInput.value) || record.pieceQuantity;
+        // Change here: Use a different approach to allow 0 values
+        const newBoxQuantity = boxInput.value !== '' ? parseInt(boxInput.value) : 0;
+        const newPieceQuantity = pieceInput.value !== '' ? parseInt(pieceInput.value) : 0;
         
         // Update data structure
         scanRecords[recordIndex].items[itemIndex].boxQuantity = newBoxQuantity;
