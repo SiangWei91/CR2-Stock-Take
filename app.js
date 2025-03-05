@@ -853,8 +853,8 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
             return; // Prevent double-saving
         }
         
-        const newBoxQuantity = boxInput.value !== '' ? parseInt(boxInput.value) : 0;
-        const newPieceQuantity = pieceInput.value !== '' ? parseInt(pieceInput.value) : 0;
+        const newBoxQuantity = parseInt(boxInput.value) || record.boxQuantity;
+        const newPieceQuantity = parseInt(pieceInput.value) || record.pieceQuantity;
         
         // Update data structure
         scanRecords[recordIndex].items[itemIndex].boxQuantity = newBoxQuantity;
@@ -871,7 +871,7 @@ function editRecordGroup(groupElement, recordIndex, itemIndex) {
         document.removeEventListener('click', handleClickOutside);
         
         // Show success message for local update
-        showCustomAlert('记录已更新 Value Updated！');
+        showCustomAlert('记录已更新！');
     }
     
     // Handle input events
