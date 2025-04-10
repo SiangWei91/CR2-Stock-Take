@@ -515,6 +515,16 @@ const products = [
         scanned: false
     },
 {
+        barcode: "28032",
+        name: "顶级芝士鱼豆腐 PREMIUM CHEESE FISH TOFU",
+        packaging: "200g x 25 pkt",
+        skus: [
+            { type: "CTN", name: "顶级芝士鱼豆腐 PREMIUM CHEESE FISH TOFU", packaging: "200g x 25pkt", itemCode: "28032" },
+            { type: "PKT", name: "顶级芝士鱼豆腐 PREMIUM CHEESE FISH TOFU", packaging: "200g/pkt", itemCode: "28033" }
+        ],
+        scanned: false
+    },
+{
         barcode: "26112",
         name: "皇帝蟹粒 FLAVOURED KING CRAB BITE",
         packaging: "250g x 40pkt",
