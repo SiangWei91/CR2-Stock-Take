@@ -1,2 +1,3 @@
-# Ignore configuration files
-config.js
+
+// config.js
+const FIREBASE_DB_URL = "https://li-chuan-user-name-default-rtdb.asia-southeast1.firebasedatabase.app";

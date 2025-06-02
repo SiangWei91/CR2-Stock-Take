@@ -599,4 +599,3 @@ document.getElementById('pieceQuantityInput').addEventListener('keypress', funct
         submitQuantity(); // Assuming submitQuantity is defined
     }
 });
-// The barcodeInput event listeners are already defined within setupBarcodeInput.
