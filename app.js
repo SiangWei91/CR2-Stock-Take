@@ -11,6 +11,16 @@ const products = [
         scanned: false
     },
     {
+        barcode: "40665",
+        name: "SP 海鲜卷 SEAFOOD ROLL",
+        packaging: "750g x 14pkt",
+        skus: [
+            { type: "CTN", name: "SP 海鲜卷 SEAFOOD ROLL", packaging: "750g x 14pkt", itemCode: "40665" },
+            { type: "PKT", name: "SP 海鲜卷 SEAFOOD ROLL", packaging: "750g", itemCode: "40665.1" }
+        ],
+        scanned: false
+    },
+    {
         barcode: "50266",
         name: "熊猫鱼饼 PANDY FISH",
         packaging: "500g x 20pkt",
