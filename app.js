@@ -535,6 +535,16 @@ const products = [
         scanned: false
     },
 {
+        barcode: "28002",
+        name: "鱼豆腐(500g) FISH TOFU",
+        packaging: "500g x 20pkt",
+        skus: [
+            { type: "CTN", name: "鱼豆腐(500g) FISH TOFU", packaging: "500g x 20pkt", itemCode: "28002" },
+            { type: "PKT", name: "鱼豆腐(500g) FISH TOFU", packaging: "500g/pkt", itemCode: "28009" }
+        ],
+        scanned: false
+    },
+{
         barcode: "26112",
         name: "皇帝蟹粒 FLAVOURED KING CRAB BITE",
         packaging: "250g x 40pkt",
