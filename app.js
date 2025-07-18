@@ -1080,24 +1080,13 @@ async function submitToGoogleSheet() {
             return `${day}/${month}/${year}`;
         }
 
-        console.log('=== 开始处理数据 ===');
-        console.log('原始scanRecords:', scanRecords);
-        console.log('原始products:', products);
-        console.log('counter:', counter);
-        console.log('LOCATION:', LOCATION);
-
         const data = scanRecords.flatMap(record => 
             record.items.map(item => {
                 const product = products.find(p => p.name === item.name);
-                const ctnSku = product ? product.skus.find(sku => sku.type === "CTN") : null;
-                const pktSku = product ? product.skus.find(sku => sku.type === "PKT") : null;
+                const ctnSku = product.skus.find(sku => sku.type === "CTN");
+                const pktSku = product.skus.find(sku => sku.type === "PKT");
                 
                 const [date, time] = item.timestamp.split(' ');
-                
-                console.log('处理item:', item);
-                console.log('找到的product:', product);
-                console.log('ctnSku:', ctnSku);
-                console.log('pktSku:', pktSku);
                 
                 return {
                     sheetName: LOCATION,
@@ -1114,11 +1103,6 @@ async function submitToGoogleSheet() {
             })
         );
 
-        console.log('=== 最终发送的数据 ===');
-        console.log('数据条数:', data.length);
-        console.log('完整数据:', JSON.stringify(data, null, 2));
-        console.log('第一条数据示例:', data[0]);
-
         if (!checkInternetConnection()) {
             saveToSessionStorage(data);
             showCustomAlert('无网络连接。数据已保存，将在有网络时自动提交。No network connection. Data has been saved and will be automatically submitted when the network is available.');
@@ -1127,19 +1111,11 @@ async function submitToGoogleSheet() {
 
         const pendingSubmissions = getPendingSubmissions();
         if (pendingSubmissions.length > 0) {
-            console.log('=== 处理待提交数据 ===');
-            console.log('待提交数据条数:', pendingSubmissions.length);
-            
             for (const pendingData of pendingSubmissions) {
-                console.log('提交待处理数据:', pendingData);
-                
                 const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
                     method: 'POST',
                     body: JSON.stringify(pendingData)
                 });
-                
-                console.log('待处理数据响应状态:', response.status);
-                
                 if (!response.ok) {
                     throw new Error('提交历史数据失败 Historical data submission failed');
                 }
@@ -1148,27 +1124,12 @@ async function submitToGoogleSheet() {
             sessionStorage.removeItem('pendingSubmissions');
         }
 
-        console.log('=== 发送主要数据到Google Script ===');
-        console.log('请求URL:', 'https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec');
-        console.log('请求方法:', 'POST');
-        console.log('请求体:', JSON.stringify(data));
-
         const response = await fetch('https://script.google.com/macros/s/AKfycbyJckzalJVidtiiih_aBZc_Ec-KW92eJgke5xRgIGte7hMUzvVKx4MhzSXwxzvS-28/exec', {
             method: 'POST',
             body: JSON.stringify(data)
         });
 
-        console.log('=== 响应信息 ===');
-        console.log('响应状态:', response.status);
-        console.log('响应状态文本:', response.statusText);
-        console.log('响应OK:', response.ok);
-        console.log('响应headers:', response.headers);
-
         if (response.ok) {
-            const result = await response.json();
-            console.log('=== 响应内容 ===');
-            console.log('响应结果:', result);
-            
             // Reset all products' scanned status
             products.forEach(product => {
                 product.scanned = false;
@@ -1184,16 +1145,10 @@ async function submitToGoogleSheet() {
             
             showCustomAlert('数据提交成功！Submission completed successfully!');
         } else {
-            const errorText = await response.text();
-            console.error('=== 请求失败 ===');
-            console.error('错误状态:', response.status);
-            console.error('错误内容:', errorText);
             throw new Error('提交失败 Failed to submit');
         }
     } catch (error) {
-        console.error('=== 异常捕获 ===');
-        console.error('错误详情:', error);
-        console.error('错误堆栈:', error.stack);
+        console.error('Error:', error);
         saveToSessionStorage(data);
         showCustomAlert('提交失败，数据已保存，将在下次提交时重试！Submission failed. Data has been saved and will be retried on the next submission attempt!');
     } finally {
