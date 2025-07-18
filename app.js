@@ -1054,6 +1054,19 @@ function checkInternetConnection() {
     return navigator.onLine;
 }
 
+// Function to get pending submissions from session storage
+function getPendingSubmissions() {
+    const pending = sessionStorage.getItem('pendingSubmissions');
+    return pending ? JSON.parse(pending) : [];
+}
+
+// Function to save data to session storage
+function saveToSessionStorage(data) {
+    const pending = getPendingSubmissions();
+    pending.push(data);
+    sessionStorage.setItem('pendingSubmissions', JSON.stringify(pending));
+}
+
 // Function to save data to session storage
 async function submitToGoogleSheet() {
     const counterSelect = document.getElementById('counterSelect');
