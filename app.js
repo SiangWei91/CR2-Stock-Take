@@ -21,36 +21,6 @@ const products = [
         scanned: false
     },
     {
-        barcode: "50266",
-        name: "熊猫鱼饼 PANDY FISH",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "熊猫鱼饼 PANDY FISH", packaging: "500g x 20pkt", itemCode: "50266" },
-            { type: "PKT", name: "熊猫鱼饼 PANDY FISH", packaging: "500g/pkt", itemCode: "50267" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50268",
-        name: "可爱鱼 CARTOON FISH",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "CARTOON FISH", packaging: "500g x 20pkt", itemCode: "50268" },
-            { type: "PKT", name: "CARTOON FISH", packaging: "500g/pkt", itemCode: "50269" }
-        ],
-        scanned: false
-    },
-    {
-        barcode: "50270",
-        name: "果香鱼饼 FRUITY FISH CAKE",
-        packaging: "500g x 20pkt",
-        skus: [
-            { type: "CTN", name: "FRUITY FISH CAKE", packaging: "500g x 20pkt", itemCode: "50270" },
-            { type: "PKT", name: "FRUITY FISH CAKE", packaging: "500g/pkt", itemCode: "50271" }
-        ],
-        scanned: false
-    },
-    {
         barcode: "50702",
         name: "春卷 SPRING ROLL",
         packaging: "8pkts x 10's",
@@ -541,6 +511,26 @@ const products = [
         skus: [
             { type: "CTN", name: "鱼豆腐(500g) FISH TOFU", packaging: "500g x 20pkt", itemCode: "28002" },
             { type: "PKT", name: "鱼豆腐(500g) FISH TOFU", packaging: "500g/pkt", itemCode: "28009" }
+        ],
+        scanned: false
+    },   
+{
+        barcode: "40680",
+        name: "墨鱼条(500g) CUTTLEFISH STICK",
+        packaging: "500g x 20pkt",
+        skus: [
+            { type: "CTN", name: "墨鱼条(500g) CUTTLEFISH STICK", packaging: "500g x 20pkt", itemCode: "40680" },
+            { type: "PKT", name: "墨鱼条(500g) CUTTLEFISH STICK", packaging: "500g/pkt", itemCode: "40681" }
+        ],
+        scanned: false
+    },
+{
+        barcode: "40682",
+        name: "虾味条(500g) SHRIMP FLAVOURED STICK",
+        packaging: "500g x 20pkt",
+        skus: [
+            { type: "CTN", name: "虾味条(500g) SHRIMP FLAVOURED STICK", packaging: "500g x 20pkt", itemCode: "40682" },
+            { type: "PKT", name: "虾味条(500g) SHRIMP FLAVOURED STICK", packaging: "500g/pkt", itemCode: "40683" }
         ],
         scanned: false
     },
