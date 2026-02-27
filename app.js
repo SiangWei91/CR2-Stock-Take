@@ -21,31 +21,31 @@ const products = [
         scanned: false
     },
     {
-        barcode: "50702",
+        barcode: "50700",
         name: "春卷 SPRING ROLL",
-        packaging: "8pkts x 10's",
+        packaging: "12pkts x 10's",
         skus: [
-            { type: "CTN", name: "春卷 SPRING ROLL", packaging: "8pkts x 10's", itemCode: "50702" },
-            { type: "PKT", name: "春卷 SPRING ROLL", packaging: "10's/pkt", itemCode: "50703" }
+            { type: "CTN", name: "春卷 SPRING ROLL", packaging: "12pkts x 10's", itemCode: "50700" },
+            { type: "PKT", name: "春卷 SPRING ROLL", packaging: "10's/pkt", itemCode: "50701" }
         ],
         scanned: false
     },
     {
-        barcode: "61006",
+        barcode: "62006.1",
         name: "(E)四色卷 FOUR COLOUR ROLL",
         packaging: "5's x 15pkt",
         skus: [
-            { type: "CTN", name: "(E)四色卷 FOUR COLOUR ROLL", packaging: "5's x 15pkt", itemCode: "61006" },
+            { type: "CTN", name: "(E)四色卷 FOUR COLOUR ROLL", packaging: "5's x 15pkt", itemCode: "62006.1" },
             { type: "PKT", name: "(E)四色卷 FOUR COLOUR ROLL", packaging: "5's/pkt", itemCode: "62006" }
         ],
         scanned: false
     },
     {
-        barcode: "NA1",
+        barcode: "92000",
         name: "苏东丸 CUTTLEFISH BALL",
         packaging: "1kg x 10pkt",
         skus: [
-            { type: "CTN", name: "苏东丸 CUTTLEFISH BALL", packaging: "1kg x 10pkt", itemCode: "NA1" },
+            { type: "CTN", name: "苏东丸 CUTTLEFISH BALL", packaging: "1kg x 10pkt", itemCode: "92000" },
             { type: "PKT", name: "苏东丸 CUTTLEFISH BALL", packaging: "1kg/pkt", itemCode: "10903" }
         ],
         scanned: false
@@ -355,11 +355,11 @@ const products = [
         scanned: false
     },
  {
-        barcode: "90003.1",
+        barcode: "90003",
         name: "NTUC鱼丸 28G NTUC FISH BALL 28G",
         packaging: "1kg x 10pkt",
         skus: [
-            { type: "CTN", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg x 10pkt", itemCode: "90003.1" },
+            { type: "CTN", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg x 10pkt", itemCode: "90003" },
             { type: "PKT", name: "NTUC鱼丸 28G NTUC FISH BALL 28G", packaging: "1kg", itemCode: "NA2" }
         ],
         scanned: false
@@ -405,11 +405,11 @@ const products = [
         scanned: false
     },
  {
-        barcode: "40693",
+        barcode: "90006",
         name: "泰式鱼饼 THAI FISH CAKE",
         packaging: "1kg x 10pkt",
         skus: [
-            { type: "CTN", name: "泰式鱼饼 THAI FISH CAKE", packaging: "1kg x 10pkt", itemCode: "40693" },
+            { type: "CTN", name: "泰式鱼饼 THAI FISH CAKE", packaging: "1kg x 10pkt", itemCode: "90006" },
             { type: "PKT", name: "泰式鱼饼 THAI FISH CAKE", packaging: "1kg/pkt", itemCode: "40694" }
         ],
         scanned: false
