@@ -485,11 +485,11 @@ const products = [
         scanned: false
     },
 {
-        barcode: "26114",
+        barcode: "26116",
         name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL",
-        packaging: "250g x 40pkt",
+        packaging: "250g x 20pkt",
         skus: [
-            { type: "CTN", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g x 40pkt", itemCode: "26114" },
+            { type: "CTN", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g x 20pkt", itemCode: "26116" },
             { type: "PKT", name: "芝士皇帝蟹味丸 CHEESE FLAVOURED KING CRAB BALLL", packaging: "250g/pkt", itemCode: "26115" }
         ],
         scanned: false
@@ -535,11 +535,11 @@ const products = [
         scanned: false
     },
 {
-        barcode: "26112",
+        barcode: "26117",
         name: "皇帝蟹粒 FLAVOURED KING CRAB BITE",
-        packaging: "250g x 40pkt",
+        packaging: "250g x 20pkt",
         skus: [
-            { type: "CTN", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g x 40pkt", itemCode: "26112" },
+            { type: "CTN", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g x 20pkt", itemCode: "26117" },
             { type: "PKT", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g/pkt", itemCode: "26113" }
         ],
         scanned: false
