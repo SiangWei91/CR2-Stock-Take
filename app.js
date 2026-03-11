@@ -537,7 +537,7 @@ const products = [
     {
         barcode: "26112",
         name: "皇帝蟹粒 FLAVOURED KING CRAB BITE",
-        packaging: "500g x 40pkt",
+        packaging: "250g x 40pkt",
         skus: [
             { type: "CTN", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g x 40pkt", itemCode: "26112" },
             { type: "PKT", name: "皇帝蟹粒 FLAVOURED KING CRAB BITE", packaging: "250g/pkt", itemCode: "26113" }
