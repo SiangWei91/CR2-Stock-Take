@@ -1,5 +1,14 @@
-// 示例产品数据
-const products = [
+// ============================================================================
+// Product list comes from Supabase (list_key='cr2-stock-take').
+// Cached in localStorage; re-fetched only when user clicks the title (no scan records in progress).
+// ============================================================================
+
+const PRODUCT_LIST_KEY = 'cr2-stock-take';
+const STORAGE_PRODUCTS = 'masterProductList_cr2';
+
+let products = [];
+
+const PRODUCTS_FALLBACK = [
     {
         barcode: "40648",
         name: "彩虹鱼饼 FISH CAKE",
@@ -558,13 +567,72 @@ const products = [
 let currentProduct = null;
 let scanRecords = [];
 
+async function fetchProductsFromDB() {
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const { data, error } = await supabaseClient
+        .from('app_product_list_items')
+        .select('barcode, name, packing_size, skus')
+        .eq('list_key', PRODUCT_LIST_KEY)
+        .order('sort_order');
+    if (error) throw error;
+    return data.map(r => ({
+        barcode: r.barcode,
+        name: r.name,
+        packaging: r.packing_size || '',
+        skus: r.skus || [],
+        scanned: false
+    }));
+}
+
+async function ensureProductsLoaded() {
+    const cached = localStorage.getItem(STORAGE_PRODUCTS);
+    if (cached) {
+        products = JSON.parse(cached).map(p => ({ ...p, scanned: false }));
+        return;
+    }
+    if (!navigator.onLine) {
+        products = PRODUCTS_FALLBACK.map(p => ({ ...p, scanned: false }));
+        return;
+    }
+    try {
+        const fresh = await fetchProductsFromDB();
+        localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(fresh));
+        products = fresh;
+    } catch (e) {
+        console.error('Failed to fetch products from DB, using fallback:', e);
+        products = PRODUCTS_FALLBACK.map(p => ({ ...p, scanned: false }));
+    }
+}
+
+async function onTitleClick() {
+    if (scanRecords.length > 0) return;
+    if (!navigator.onLine) {
+        showCustomAlert('离线状态 Cannot update while offline');
+        return;
+    }
+    if (!confirm('确认从数据库更新列表? Reload list from database?')) return;
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) loadingOverlay.style.display = 'block';
+    try {
+        const fresh = await fetchProductsFromDB();
+        localStorage.setItem(STORAGE_PRODUCTS, JSON.stringify(fresh));
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        showCustomAlert('列表已更新 List updated');
+        setTimeout(() => location.reload(), 800);
+    } catch (e) {
+        if (loadingOverlay) loadingOverlay.style.display = 'none';
+        console.error('Update failed:', e);
+        showCustomAlert('更新失败 Update failed');
+    }
+}
 
 // 初始化
-window.onload = function() {
+window.onload = async function() {
+    await ensureProductsLoaded();
     renderProducts();
     updateProgress();
     document.getElementById('barcodeInput').focus();
-    populateUserDropdown(); // Add this line to populate the dropdown
+    populateUserDropdown();
 }
 function createCustomAlert() {
     // Create the styles
@@ -715,8 +783,9 @@ function searchProduct() {
 
     document.getElementById('barcodeInput').value = '';
 }
-// Initialize
-window.onload = function() {
+// Initialize (consolidated above; this overrides the earlier one)
+window.onload = async function() {
+    await ensureProductsLoaded();
     renderProducts();
     updateProgress();
     setupBarcodeInput();

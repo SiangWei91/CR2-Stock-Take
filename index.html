@@ -449,7 +449,7 @@ body {
 <body>
     <div id="scanPage" class="page active">
         <div class="header">
-            <h1>2号房库存盘点 | CR2 Stock Take</h1>
+            <h1 id="appTitle" onclick="onTitleClick()" style="cursor: pointer;" title="点击标题更新列表 Click title to update list">2号房库存盘点 | CR2 Stock Take</h1>
             <div class="progress">
                 <div class="progress-bar" id="progressBar"></div>
             </div>
@@ -510,6 +510,7 @@ body {
         <button onclick="showPage('records')">记录 | Record</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="app.js"></script>
 
     <!-- Side Panel -->
